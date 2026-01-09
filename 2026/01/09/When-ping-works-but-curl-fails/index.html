@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="Sirui Liu">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="http://example.com/2026/01/09/when-ping-works-but-curl-fails/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="When ping works but curl fails — a NAS networking ghost (and a stupid fix)">
+<meta property="og:url" content="http://example.com/2026/01/09/When-ping-works-but-curl-fails/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-01-09T16:10:56.000Z">
+<meta property="article:modified_time" content="2026-01-09T20:42:29.218Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/redefine-og.webp">
+    
+    
+        <!-- Google tag (gtag.js) -->
+        <script src="https://www.googletagmanager.com/gtag/js?id="></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '');
+        </script>
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/127751002_p0.ico" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/127751002_p0.ico">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/127751002_p0.ico">
+    <!--- Page Info-->
+    
+    <title>
+        
+            When ping works but curl fails — a NAS networking ghost (and a stupid fix) | Sirui&#39;s blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"example.com","root":"/","language":"en"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"dark"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":true,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/87215848_p0-light.webp","dark":"/images/87215848_p0.webp"},"title":"Sirui's Blog","subtitle":{"text":["In Grief and Great Delight."],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#1f1e33"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/WorldVanquisher","instagram":"https://www.instagram.com/worldvanquisher1owx/","zhihu":null,"twitter":null,"email":"mailto:awakelowsing@gmail.com","linkedin":"https://www.linkedin.com/in/s3liu/"},"qrs":{"weixin":"/images/Image_20250428055835.jpg","qq":"/images/A69BA84D7D9A5CFC745A2D4EF0499162.png"}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":true,"version":"11.6.0"}},"version":"2.8.2","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Status":{"path":"none","icon":"fa-regular fa-chart-bar"},"About":{"icon":"fa-regular fa-user","submenus":{"Me":"/about","Github":"https://github.com/WorldVanquisher"}},"Friends":{"icon":"fa-solid fa-link","path":"/links"},"Tags":{"icon":"fa-solid fa-tags","path":"/tags/"},"Categories":{"icon":"fa-solid fa-folder","path":"/categories/"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2025/5/06 11:45:14"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+                <a class="logo-image h-8 w-8 sm:w-10 sm:h-10 mr-3" href="/">
+                    <img src="/images/127751002_p0.ico" class="w-full h-full rounded-sm">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                Sirui&#39;s blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown"
+                                   href="#"
+                                        onClick=&#34;return false;&#34;>
+                                    <i class="fa-regular fa-user fa-fw"></i>
+                                    ABOUT
+                                    <i class="fa-solid fa-chevron-down fa-fw"></i>
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                        
+                                            <li>
+                                                <a href="/about">
+                                                    ME
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a target="_blank" rel="noopener" href="https://github.com/WorldVanquisher">
+                                                    GITHUB
+                                                </a>
+                                            </li>
+                                        
+                                    </ul>
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/links"
+                                        >
+                                    <i class="fa-solid fa-link fa-fw"></i>
+                                    FRIENDS
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/tags/"
+                                        >
+                                    <i class="fa-solid fa-tags fa-fw"></i>
+                                    TAGS
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/categories/"
+                                        >
+                                    <i class="fa-solid fa-folder fa-fw"></i>
+                                    CATEGORIES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                
+                    
+
+                    <li class="drawer-navbar-item-sub text-base my-1.5 flex flex-col w-full">
+                        
+                        <div class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary cursor-pointer text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                             navbar-data-toggle="submenu-About"
+                        >
+                            <span>
+                                ABOUT
+                            </span>
+                            
+                                <i class="fa-solid fa-chevron-right fa-sm fa-fw transition-all"></i>
+                            
+                        </div>
+                        
+
+                        
+                            <div class="flex-col items-start px-2 py-2 hidden" data-target="submenu-About">
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/about">ME</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           target="_blank" rel="noopener" href="https://github.com/WorldVanquisher">GITHUB</a>
+                                    </div>
+                                
+                            </div>
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/links"
+                        >
+                            <span>
+                                FRIENDS
+                            </span>
+                            
+                                <i class="fa-solid fa-link fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/tags/"
+                        >
+                            <span>
+                                TAGS
+                            </span>
+                            
+                                <i class="fa-solid fa-tags fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/categories/"
+                        >
+                            <span>
+                                CATEGORIES
+                            </span>
+                            
+                                <i class="fa-solid fa-folder fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">1</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">0</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">6</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">When ping works but curl fails — a NAS networking ghost (and a stupid fix)</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+				<img src="/images/127751002_p0.ico">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Sirui Liu</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv1</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-01-09 11:10:56</span>
+        <span class="mobile">2026-01-09 11:10:56</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-01-09 15:42:29</span>
+            <span class="mobile">2026-01-09 15:42:29</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>742 Words</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>4 Mins</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<p>Very normal maintenance day. Very abnormal network behavior.<br>Also: yes, it was <em>my</em> fault.</p>
+<details class="blue" data-header-exclude><summary><i class="fa-solid fa-chevron-right"></i>Yappings </summary>
+              <div class='content'>
+              <p>Yes as you all know, I am currently running an <em>arch</em> Linux on a very-aged laptop which holds several services:</p><ul><li>Docker services (Jellyfin &#x2F; Paperless-NGX &#x2F; bots)</li><li>Samba</li><li>Several future features I may totally forgot days after but that doesn’t matter</li></ul><p>Unfortunately, due to great pressure of UWaterloo, I lost my passionate writing my personal blog until a new job cycle begins several days after. Therefore, I have to make up my mind to write something for… mostly my potential future HRs idk.</p><p>Onegai, please let me find a job.</p>
+              </div>
+            </details>
+
+<hr>
+<h2 id="TL-DR-skip-to-the-punchline"><a href="#TL-DR-skip-to-the-punchline" class="headerlink" title="TL;DR (skip to the punchline)"></a>TL;DR (skip to the punchline)</h2><ul>
+<li><code>ping 8.8.8.8</code> ✅</li>
+<li><code>curl https://www.google.com</code> ❌ timeout</li>
+<li><code>curl -v ...</code> showed it was using <code>all_proxy=socks://127.0.0.1:8889</code></li>
+<li>proxy not running → HTTP&#x2F;HTTPS silently routed into the void</li>
+<li>fix: <code>unset all_proxy http_proxy https_proxy</code> + remove from shell init</li>
+</ul>
+<hr>
+<h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>My NAS hosts a few personal services and runs most things in Docker.<br>It’s stable enough that I <em>assume</em> the network is fine… until I touch something and reality disagrees.</p>
+<hr>
+<h2 id="Symptom-“Ping-is-fine-but-the-web-is-dead”"><a href="#Symptom-“Ping-is-fine-but-the-web-is-dead”" class="headerlink" title="Symptom: “Ping is fine, but the web is dead”"></a>Symptom: “Ping is fine, but the web is dead”</h2><h3 id="What-worked"><a href="#What-worked" class="headerlink" title="What worked"></a>What worked</h3><ul>
+<li><code>ping 8.8.8.8</code> worked normally</li>
+<li>routes looked sane (<code>ip route</code>)</li>
+<li>nothing obvious was blocked</li>
+</ul>
+<h3 id="What-failed"><a href="#What-failed" class="headerlink" title="What failed"></a>What failed</h3><ul>
+<li><code>curl https://www.google.com</code> timed out</li>
+<li>API calls from Docker containers failed too</li>
+<li>anything relying on external HTTPS became unusable</li>
+</ul>
+<p>This is the key mismatch:</p>
+<blockquote>
+<p><strong>ICMP is OK</strong>, but <strong>HTTP&#x2F;HTTPS is not</strong>.</p>
+</blockquote>
+<details class="blue" data-header-exclude><summary><i class="fa-solid fa-chevron-right"></i>Wait, what is ICMP? </summary>
+              <div class='content'>
+              <p>ICMP stands for <strong>Internet Control Message Protocol</strong>.</p><p>If you don’t remember it clearly — that’s normal.<br>Most people only <em>meet</em> ICMP through one command:</p><p><code>ping</code></p><p>ICMP is not used to “send data” like HTTP or HTTPS.<br>It’s mainly for <strong>network diagnostics and control messages</strong>:</p><ul><li>“Are you alive?”</li><li>“Can you hear me?”</li><li>“This route is unreachable.”</li><li>“Your packet is too big, try smaller ones.”</li></ul><p>That’s why this bug was so misleading:</p><ul><li><code>ping</code> uses <strong>ICMP</strong></li><li><code>curl</code> uses <strong>HTTP&#x2F;HTTPS (TCP)</strong></li></ul><p>They go through <strong>very different code paths</strong>.</p><p>So:</p><ul><li>ICMP can work perfectly</li><li>while TCP-based applications silently fail</li></ul><p>This is also why:</p><ul><li>proxies</li><li>environment variables</li><li>application-level configs</li></ul><p>can break <code>curl</code> <strong>without touching <code>ping</code> at all</strong>.</p><p>If <code>ping</code> works but apps don’t,<br><strong>the problem is almost never “the cable”.</strong></p>
+              </div>
+            </details>
+
+<hr>
+<h2 id="My-first-checks-boring-but-they-rule-out-the-obvious"><a href="#My-first-checks-boring-but-they-rule-out-the-obvious" class="headerlink" title="My first checks (boring, but they rule out the obvious)"></a>My first checks (boring, but they rule out the obvious)</h2><h3 id="1-Routing"><a href="#1-Routing" class="headerlink" title="1) Routing"></a>1) Routing</h3><p>Checked default route and whether traffic was being forced through Tailscale &#x2F; VPN policy routes:</p>
+<ul>
+<li><code>ip route</code></li>
+<li><code>ip rule</code></li>
+</ul>
+<h3 id="2-DNS"><a href="#2-DNS" class="headerlink" title="2) DNS"></a>2) DNS</h3><p>Confirmed domains resolve (because “curl fails” sometimes is just DNS being cursed):</p>
+<ul>
+<li><code>cat /etc/resolv.conf</code></li>
+<li><code>dig google.com</code> (or <code>nslookup google.com</code>)</li>
+</ul>
+<h3 id="3-Tailscale-interference"><a href="#3-Tailscale-interference" class="headerlink" title="3) Tailscale interference"></a>3) Tailscale interference</h3><p>Temporarily ruled out overlay routing weirdness:</p>
+<ul>
+<li>stop&#x2F;disable Tailscale <em>temporarily</em> (whatever your setup is)</li>
+</ul>
+<p>None of these explained why <code>ping</code> was happy but <code>curl</code> was not.</p>
+<hr>
+<h2 id="The-clue-that-mattered-curl-v"><a href="#The-clue-that-mattered-curl-v" class="headerlink" title="The clue that mattered: curl -v"></a>The clue that mattered: <code>curl -v</code></h2><p>I ran <code>curl</code> in verbose mode:</p>
+<ul>
+<li><code>curl -v https://www.google.com</code></li>
+</ul>
+<p>And saw something like:</p>
+<div class="code-container" data-rel="Text"><figure class="iseeu highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Uses proxy env variable all_proxy == &#x27;socks://127.0.0.1:8889&#x27;</span><br></pre></td></tr></table></figure></div>
+
+<p>That instantly changed the question from:</p>
+<blockquote>
+<p>“Why is my network broken?”</p>
+</blockquote>
+<p>to:</p>
+<blockquote>
+<p>“Why is curl not using my network at all?”</p>
+</blockquote>
+<hr>
+<h2 id="Root-cause-a-stale-proxy-environment-variable"><a href="#Root-cause-a-stale-proxy-environment-variable" class="headerlink" title="Root cause: a stale proxy environment variable"></a>Root cause: a stale proxy environment variable</h2><p>Some time ago, I had set:</p>
+<ul>
+<li><code>all_proxy=socks://127.0.0.1:8889</code></li>
+</ul>
+<p>…but the local SOCKS proxy service was <strong>no longer running</strong>.</p>
+<p>So the behavior made perfect sense:</p>
+<ul>
+<li><code>ping</code> uses ICMP → doesn’t care about HTTP proxy → ✅</li>
+<li><code>curl</code> respects proxy env vars → routes to <code>127.0.0.1:8889</code> → ❌ (nothing is listening)</li>
+<li>Docker containers and HTTP clients that inherit env vars → same failure mode</li>
+</ul>
+<p><strong>This is why “ping works” didn’t mean “the internet works”.</strong></p>
+<hr>
+<h2 id="Fix"><a href="#Fix" class="headerlink" title="Fix"></a>Fix</h2><h3 id="Immediate-fix-current-shell"><a href="#Immediate-fix-current-shell" class="headerlink" title="Immediate fix (current shell)"></a>Immediate fix (current shell)</h3><p>Run:</p>
+<ul>
+<li><code>unset all_proxy http_proxy https_proxy</code></li>
+</ul>
+<p>(If you only set one of them, unset just that one.)</p>
+<h3 id="Permanent-fix-don’t-let-it-come-back"><a href="#Permanent-fix-don’t-let-it-come-back" class="headerlink" title="Permanent fix (don’t let it come back)"></a>Permanent fix (don’t let it come back)</h3><p>Search your shell config files (<code>~/.bashrc</code>, <code>~/.zshrc</code>, etc.) and remove any proxy exports, e.g.:</p>
+<ul>
+<li><code>export all_proxy=...</code></li>
+<li><code>export http_proxy=...</code></li>
+<li><code>export https_proxy=...</code></li>
+</ul>
+<p>Restart shell &#x2F; re-login, then re-test with:</p>
+<ul>
+<li><code>curl https://www.google.com</code></li>
+</ul>
+<hr>
+<h2 id="Key-takeaways-for-future-me"><a href="#Key-takeaways-for-future-me" class="headerlink" title="Key takeaways (for future me)"></a>Key takeaways (for future me)</h2><ul>
+<li><strong>Ping working ≠ application connectivity working</strong></li>
+<li>Always check <code>curl -v</code> early if HTTP behaves weirdly</li>
+<li>Proxy env vars can silently affect <em>everything</em></li>
+<li>Old configs are basically landmines with a timer</li>
+</ul>
+<hr>
+<h2 id="What’s-next"><a href="#What’s-next" class="headerlink" title="What’s next"></a>What’s next</h2><ul>
+<li>I’ll probably write a quick “NAS networking checklist” post later:<ul>
+<li>DNS &#x2F; routes &#x2F; MTU &#x2F; proxy env vars &#x2F; Docker networking</li>
+</ul>
+</li>
+<li>Also: maybe a supplement of former projects I ever done before (eg. DockerHub &amp; How to Dockerlize a software)</li>
+</ul>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> When ping works but curl fails — a NAS networking ghost (and a stupid fix)</li>
+        <li><strong>Author:</strong> Sirui Liu</li>
+        <li><strong>Created at
+                :</strong> 2026-01-09 11:10:56</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2026-01-09 15:42:29
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://worldvanquisher.github.io/2026/01/09/When-ping-works-but-curl-fails/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2025/06/02/KaTex-Test/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item">KaTex_Test</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">When ping works but curl fails — a NAS networking ghost (and a stupid fix)</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#TL-DR-skip-to-the-punchline"><span class="nav-text">TL;DR (skip to the punchline)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Background"><span class="nav-text">Background</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Symptom-%E2%80%9CPing-is-fine-but-the-web-is-dead%E2%80%9D"><span class="nav-text">Symptom: “Ping is fine, but the web is dead”</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#What-worked"><span class="nav-text">What worked</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#What-failed"><span class="nav-text">What failed</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#My-first-checks-boring-but-they-rule-out-the-obvious"><span class="nav-text">My first checks (boring, but they rule out the obvious)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Routing"><span class="nav-text">1) Routing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-DNS"><span class="nav-text">2) DNS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Tailscale-interference"><span class="nav-text">3) Tailscale interference</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-clue-that-mattered-curl-v"><span class="nav-text">The clue that mattered: curl -v</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Root-cause-a-stale-proxy-environment-variable"><span class="nav-text">Root cause: a stale proxy environment variable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fix"><span class="nav-text">Fix</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Immediate-fix-current-shell"><span class="nav-text">Immediate fix (current shell)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Permanent-fix-don%E2%80%99t-let-it-come-back"><span class="nav-text">Permanent fix (don’t let it come back)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Key-takeaways-for-future-me"><span class="nav-text">Key takeaways (for future me)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What%E2%80%99s-next"><span class="nav-text">What’s next</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Sirui Liu</a>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">VISITOR COUNT</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">TOTAL PAGE VIEWS</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.2</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/runtime.js"></script>
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+    
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@11.6.0/dist/mermaid.min.js"></script>
+    
+    
+<script src="/js/build/plugins/mermaid.js"></script>
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	
+</body>
+
+</html>
