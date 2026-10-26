@@ -774,7 +774,7 @@
                             <p>I added AI-assisted Concept suggestions to FLH to reduce the manual effort of reviewing extracted knowledge. The model proposes existing Concepts and explains its choice; the user confirms each item before membership changes. The implementation keeps generated evidence, current state and human authority separate.</p>
 <p><strong>My engineering contribution:</strong> defining bounded inputs and candidates, designing generation and confirmation as different operations, and hardening their replay, cancellation and stale-state behavior.</p>
 <blockquote>
-<p>发布日期：2026-10-22，按 America&#x2F;Toronto 的主分支实现日。实际补发：2026-10-25。实现：<a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/pull/120" >PR #120<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>；正确性修复：<a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/pull/122" >PR #122<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>。</p>
+<p>发布日期：2026-10-22</p>
 </blockquote>
                         
                     </div>
@@ -855,7 +855,7 @@
                             <p>I improved FLH’s daily learning workflow by replacing full review-queue loading with keyset pagination, adding original-text search and direct record navigation, and building a question-intake path that can recover uncertain saves.</p>
 <p><strong>Result:</strong> on an isolated fixture with <strong>1,543 reviewable units</strong>, the initial review response shrank from about <strong>821 KB to 27 KB</strong>. The learner can return to a previous unit, find an old question and save a new one without manually constructing JSON.</p>
 <blockquote>
-<p>发布日期：2026-10-21，按 America&#x2F;Toronto 的主分支实现日。实际补发：2026-10-25。实现：<a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/pull/118" >PR #118<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>，合并提交 <code>7f06b3c</code>。</p>
+<p>发布日期：2026-10-21</p>
 </blockquote>
                         
                     </div>
@@ -936,7 +936,7 @@
                             <p>I turned French Learning Hub into a deployable demonstration system by separating the personal workbench from a curated, read-only runtime. The work covered server-enforced access boundaries, precomputed model artifacts, Linux release packaging, browser acceptance, Terraform infrastructure and verified installation on EC2.</p>
 <p><strong>My engineering contribution:</strong> defining the demo’s runtime and data boundaries, connecting source provenance to release identity, and taking the deployment through an SSM-managed AWS environment with upgrade and rollback procedures.</p>
 <blockquote>
-<p>发布日期：2026-10-20，按 America&#x2F;Toronto 的 EC2 部署里程碑。实际补发：2026-10-25。日期依据：<a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/commit/48806897f8c1e368d12fe10340ca63afab77376a" >verified-source deployment record<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>。本文同时记录此后准备的 HTTPS 工具。</p>
+<p>发布日期：2026-10-20</p>
 </blockquote>
                         
                     </div>
@@ -1017,7 +1017,7 @@
                             <p>I added an explicit hybrid search mode to French Learning Hub so a learner can find a Concept through both its wording and its meaning, then inspect how that result was retrieved. The implementation combines existing SQLite keyword results with Qdrant semantic results, exposes their evidence in React, and checks the final results against current records.</p>
 <p><strong>My engineering contribution:</strong> defining a bounded ranking contract, integrating the two production search paths, making the result evidence visible, and driving acceptance through an independent ranking oracle.</p>
 <blockquote>
-<p>发布日期：2026-10-14，按 America&#x2F;Toronto 的主分支实现日。实际补发：2026-10-25。实现：<a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/pull/96" >PR #96<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>；集成验收：<a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/pull/97" >PR #97<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>。</p>
+<p>发布日期：2026-10-14</p>
 </blockquote>
                         
                     </div>
@@ -1096,7 +1096,7 @@
                     <div class="home-article-content markdown-body">
                         
                             <blockquote>
-<p>发布日期：2026-10-12（America&#x2F;Toronto，按对应主分支里程碑）。实际补发：2026-10-25。本文为项目回顾，后续进展见系列文章。</p>
+<p>发布日期：2026-10-12</p>
 </blockquote>
 <p>I added persistent semantic retrieval to FLH, connecting a Windows RTX 4070 embedding service to a Linux NAS through Tailscale. The work covers Qdrant publication, reusable SQLite vector caches, bounded model calls and GPU reproducibility diagnostics.</p>
 <p><strong>Engineering focus:</strong> AI infrastructure, index consistency and reproducible evaluation.</p>
@@ -1185,7 +1185,7 @@
                     <div class="home-article-content markdown-body">
                         
                             <blockquote>
-<p>发布日期：2026-10-10（America&#x2F;Toronto，按对应主分支里程碑）。实际补发：2026-10-25。本文为项目回顾，后续进展见系列文章。</p>
+<p>发布日期：2026-10-10</p>
 </blockquote>
 <p>I built FLH’s read-only Knowledge Library to make curated Concepts searchable and traceable to the original learning question. The accompanying synthetic demo and acceptance work cover search semantics, source navigation, process ownership and reliable startup.</p>
 <p><strong>Engineering focus:</strong> Full-stack search, provenance and demo operations.</p>
@@ -1267,7 +1267,7 @@
                     <div class="home-article-content markdown-body">
                         
                             <blockquote>
-<p>发布日期：2026-10-09（America&#x2F;Toronto，按对应主分支里程碑）。实际补发：2026-10-25。本文为项目回顾，后续进展见系列文章。</p>
+<p>发布日期：2026-10-09</p>
 </blockquote>
 <p>I added durable idempotency and recovery to Concept Review decisions so a lost HTTP response does not force the user to guess whether a write happened. The design joins a SQLite receipt, request identity and explicit browser recovery into one inspectable contract.</p>
 <p><strong>Engineering focus:</strong> API idempotency, transactions and frontend recovery.</p>
@@ -1349,7 +1349,7 @@
                     <div class="home-article-content markdown-body">
                         
                             <blockquote>
-<p>发布日期：2026-10-08（America&#x2F;Toronto，按对应主分支里程碑）。实际补发：2026-10-25。本文为项目回顾，后续进展见系列文章。</p>
+<p>发布日期：2026-10-08</p>
 </blockquote>
 <p>I packaged the Go API and React workbench into a single Docker service, then hardened its backup, restore and browser-request boundaries. The work turned a development application into an operable personal release with explicit readiness and failure behavior.</p>
 <p><strong>Engineering focus:</strong> Release engineering, recovery and service boundaries.</p>
@@ -1431,7 +1431,7 @@
                     <div class="home-article-content markdown-body">
                         
                             <blockquote>
-<p>发布日期：2026-09-04（America&#x2F;Toronto，按对应主分支里程碑）。实际补发：2026-10-25。本文为项目回顾，后续进展见系列文章。</p>
+<p>发布日期：2026-09-04</p>
 </blockquote>
 <p>I designed the learning-record boundary in FLH so original questions, machine interpretations and human corrections have distinct ownership. The result is a versioned Go&#x2F;SQLite workflow that preserves history, supports explicit correction and imports repeated captures without duplicate records.</p>
 <p><strong>Engineering focus:</strong> Data modeling, provenance and transactional ingestion.</p>
@@ -1513,7 +1513,7 @@
                     <div class="home-article-content markdown-body">
                         
                             <blockquote>
-<p>发布日期：2026-09-03（America&#x2F;Toronto，按对应主分支里程碑）。实际补发：2026-10-25。本文为项目回顾，后续进展见系列文章。</p>
+<p>发布日期：2026-09-03</p>
 </blockquote>
 <p>I built the Concept and annotation model behind FLH: immutable extracted units remain evidence, while durable Concepts carry identity and current memberships. The same model supports a human review workbench, versioned dataset exports and comparable retrieval experiments.</p>
 <p><strong>Engineering focus:</strong> Domain modeling, review workflows and retrieval evaluation.</p>
