@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    
+    <meta name="author" content="Sirui Liu">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes ASAP (before DOMContentLoaded)
+            (function() {
+                const addBodyClass = () => {
+                    const b = document.body;
+                    if (!b) return false;
+                    b.classList.add(theme + "-mode");
+                    return true;
+                };
+
+                // Try immediately
+                if (addBodyClass()) return;
+
+                // Observe until body exists
+                const mo = new MutationObserver(() => {
+                    if (addBodyClass()) mo.disconnect();
+                });
+                mo.observe(document.documentElement, { childList: true, subtree: true });
+            })();
+        })();
+    </script>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://vanquisher.world/zh-cn/2026/10/12/flh-semantic-search-engineering/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+        
+        <meta name="description" content="Sirui Liu — backend systems, infrastructure, developer tools and applied AI.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="给法语学习笔记加语义搜索：模型只负责生成向量">
+<meta property="og:url" content="https://vanquisher.world/zh-CN/2026/10/12/flh-semantic-search-engineering/index.html">
+<meta property="og:site_name" content="Sirui&#39;s blog">
+<meta property="og:description" content="Sirui Liu — backend systems, infrastructure, developer tools and applied AI.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://vanquisher.world/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-10-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-25T16:00:00.000Z">
+<meta property="article:author" content="Sirui Liu">
+<meta property="article:tag" content="Go">
+<meta property="article:tag" content="SQLite">
+<meta property="article:tag" content="Engineering">
+<meta property="article:tag" content="French Learning Hub">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://vanquisher.world/images/redefine-og.webp">
+    
+    
+        <!-- Google tag (gtag.js) -->
+        <script src="https://www.googletagmanager.com/gtag/js?id="></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '');
+        </script>
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/127751002_p0.ico" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/127751002_p0.ico">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/127751002_p0.ico">
+    <!--- Page Info-->
+    
+    <title>
+        
+            给法语学习笔记加语义搜索：模型只负责生成向量 | Sirui&#39;s blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"vanquisher.world","root":"/","language":"en"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"dark"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Sirui Liu — backend systems, infrastructure, developer tools and applied AI."},"google_analytics":{"enable":true,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/87215848_p0-light.webp","dark":"/images/87215848_p0.webp"},"title":"Sirui's Blog","subtitle":{"text":["In Grief and Great Delight."],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#1f1e33"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":[{"icon":"fa-brands fa-github","url":"https://github.com/WorldVanquisher"},{"icon":"fa-brands fa-linkedin","url":"https://www.linkedin.com/in/s3liu/"},{"icon":"fa-solid fa-at","url":"mailto:s789liu@uwaterloo.ca"},{"icon":"fa-brands fa-instagram","url":"https://www.instagram.com/worldvanquisher1owx/"},{"icon":"/images/custom-icon.svg","url":null}],"qrs":[{"icon":"fa-brands fa-weixin","qr":"/images/Image_20250428055835.jpg"},{"icon":"fa-brands fa-qq","qr":"/images/A69BA84D7D9A5CFC745A2D4EF0499162.png"}]}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":true,"version":"11.6.0","theme":{"light":"default","dark":"dark"}}},"version":"2.9.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Status":{"path":"none","icon":"fa-regular fa-chart-bar"},"About":{"icon":"fa-regular fa-user","submenus":{"Me":"/about","Github":"https://github.com/WorldVanquisher"}},"Friends":{"icon":"fa-solid fa-link","path":"/links"},"Tags":{"icon":"fa-solid fa-tags","path":"/tags/"},"Categories":{"icon":"fa-solid fa-folder","path":"/categories/"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur","masonry":{"batch_size":12,"initial_batch_size":24}},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"YYYY-MM-DD","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footer":{"runtime":true,"icon":"<i class=\"fa-solid fa-heart fa-beat\" style=\"--fa-animation-duration: 0.5s; color: #f54545\"></i>","start":"2025/5/06 11:45:14","statistics":false,"customize":null,"icp":{"enable":false,"number":null,"url":null}},"footerStart":"2025/5/06 11:45:14","mermaid":{"style":{"light":"default","dark":"dark"}}};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.i18n = {"search":"Search...","toc":"On this page","prev":"Prev","next":"Next","prev_posts":"Prev posts","next_posts":"Next posts","page":"Page %d","recent_posts":"Recent Posts","share":"Share","powered_by":"POWERED BY %s","theme":"THEME","rss_feed":"RSS Feed","category":"Category","categories":"Categories","tag":"Tag","tags":"Tags","post":"Post","posts":"Posts","tagcloud":"Tag Cloud","comment":"Comment","comments":"Comments","home":"Home","archive":"Archive","archives":"Archives","top":"TOP","sticky":"Sticky","go-back-home":"Go Back Home","masonry_loading":"Loading photos...","image_viewer":"Image viewer","close":"Close","exif":{"title":"EXIF","cards":{"camera":"Camera","lens":"Lens","exposure":"Exposure","other":"Other"},"fields":{"make":"Brand","model":"Model","date_taken":"Date taken","lens_model":"Lens","focal_length":"Focal length","focus_mode":"Focus mode","shutter":"Shutter","aperture":"Aperture","iso":"ISO","exposure_program":"Exposure program","exposure_compensation":"Exposure compensation","metering_mode":"Metering mode","flash":"Flash","white_balance":"White balance","latitude":"Latitude","longitude":"Longitude","altitude":"Altitude"},"status":{"loading":"Loading...","no_exif":"No EXIF available","library_missing":"EXIF library not loaded","image_source_missing":"Image source unavailable","unavailable":"EXIF unavailable (blocked by CORS or missing metadata)","flag_unavailable":"EXIF unavailable"}},"about":"About","changelog":"Changelog","links":"Links","link":"Link","friends":"Friends","friend":"Friend","timeline":"Timeline","shuoshuo":"Shuoshuo","bookmarks":"Bookmarks","site_uv":"VISITOR COUNT","site_pv":"TOTAL PAGE VIEWS","read_more":"Read more","wordcount":"Words","min2read":"Mins","status":"Status","runtime":"Blog up for","days":"days","hours":"hrs","minutes":"Min","seconds":"Sec","optimized_by":"and Optimized by Evan","rights":"All Rights Reserved","site_posts":"%s posts in total","site_wordcount":"%s words in total","copyright":{"author":"Author","title":"Title","link":"Link","create_time":"Created at","update_time":"Updated at","license_title":"License","license_content":"This work is licensed under %s.","all_rights_reserved":"All Rights Reserved &#169; %s","public_domain":"This work is in the public domain."},"ago":{"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"},"create_time":"Created","update_time":"Updated","expired":"This post is written %s days ago, and the content may not be up to date."};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+                <a class="logo-image h-8 w-8 sm:w-10 sm:h-10 mr-3" href="/">
+                    <img src="/images/127751002_p0.ico" class="w-full h-full rounded-xs">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                Sirui&#39;s blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    归档
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown"
+                                   href="#"
+                                        onClick=&#34;return false;&#34;>
+                                    <i class="fa-regular fa-user fa-fw"></i>
+                                    关于
+                                    <i class="fa-solid fa-chevron-down fa-fw"></i>
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                        
+                                            <li>
+                                                <a href="/about">
+                                                    ME
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a target="_blank" rel="noopener" href="https://github.com/WorldVanquisher">
+                                                    GITHUB
+                                                </a>
+                                            </li>
+                                        
+                                    </ul>
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/links"
+                                        >
+                                    <i class="fa-solid fa-link fa-fw"></i>
+                                    友情链接
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/tags/"
+                                        >
+                                    <i class="fa-solid fa-tags fa-fw"></i>
+                                    标签
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/categories/"
+                                        >
+                                    <i class="fa-solid fa-folder fa-fw"></i>
+                                    分类
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                归档
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                
+                    
+
+                    <li class="drawer-navbar-item-sub text-base my-1.5 flex flex-col w-full">
+                        
+                        <div class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary cursor-pointer text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                             navbar-data-toggle="submenu-About"
+                        >
+                            <span>
+                                关于
+                            </span>
+                            
+                                <i class="fa-solid fa-chevron-right fa-sm fa-fw transition-all"></i>
+                            
+                        </div>
+                        
+
+                        
+                            <div class="flex-col items-start px-2 py-2 hidden" data-target="submenu-About">
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/about">ME</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           target="_blank" rel="noopener" href="https://github.com/WorldVanquisher">GITHUB</a>
+                                    </div>
+                                
+                            </div>
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/links"
+                        >
+                            <span>
+                                友情链接
+                            </span>
+                            
+                                <i class="fa-solid fa-link fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/tags/"
+                        >
+                            <span>
+                                标签
+                            </span>
+                            
+                                <i class="fa-solid fa-tags fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/categories/"
+                        >
+                            <span>
+                                分类
+                            </span>
+                            
+                                <i class="fa-solid fa-folder fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">15</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">1</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">32</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">给法语学习笔记加语义搜索：模型只负责生成向量</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/127751002_p0.ico">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Sirui Liu</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv4</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-10-12 12:00</span>
+        <span class="mobile">2026-10-12 12:00</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-10-25 12:00</span>
+            <span class="mobile">2026-10-25 12:00</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Go/">Go</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/SQLite/">SQLite</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Engineering/">Engineering</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/French-Learning-Hub/">French Learning Hub</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>2.2k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>7 分钟</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<p><strong>语言：</strong> <a href="/2026/10/12/flh-semantic-search-engineering/">English</a> | 简体中文</p>
+<blockquote>
+<p>发布日期：2026-10-12</p>
+</blockquote>
+<p>French Learning Hub（FLH）是我的个人法语学习服务：我把学习中遇到的问题记下来，<br>系统提取知识单元，再由我把它们整理成持久的 Concept（例如”depuis 表示仍在持续的事”）。<br>代码主要由 AI 编码代理（Claude Code 和 Codex）在我的任务合同和审查下实现；<br>GPU 上的诊断和 NAS 上的验收由我本人执行。本文区分四类证据：<strong>事实</strong>（代码与<br>schema）、<strong>作者测试</strong>（实现代理自己跑的测试）、<strong>独立测试</strong>（另一个代理做的验收）<br>和<strong>人工观察</strong>（我本人执行、代理未复核的结果）。</p>
+<h2 id="一、为什么关键字搜索不够"><a href="#一、为什么关键字搜索不够" class="headerlink" title="一、为什么关键字搜索不够"></a>一、为什么关键字搜索不够</h2><p>Knowledge Library 原有的搜索是关键字前缀匹配，不做词干、同义词或语义。<br>问题在于：要找的往往是一个意思，可能用英文描述，而 Concept 的标识是法语语法点。<br>在 FLH-060 演示的真实模型运行里（作者测试，合成数据），关键字 <code>weather</code> 返回 0 条；<br>语义查询 “what the weather was like when I was a child” 把”imparfait 表示过去的背景和习惯”<br>排在第一位。关键字 <code>miss</code> 能命中”tu me manques”，只是因为标题里恰好有 miss 这个词。</p>
+<h2 id="二、职责划分：权威、生成器、索引"><a href="#二、职责划分：权威、生成器、索引" class="headerlink" title="二、职责划分：权威、生成器、索引"></a>二、职责划分：权威、生成器、索引</h2><div class="code-container" data-rel="Text"><figure class="iseeu highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SQLite（权威：Concept + 向量缓存 + 发布指针）</span><br><span class="line">   │  semantic-index build/sync/rebuild（显式命令）</span><br><span class="line">   ├──&gt; E5 服务（Windows RTX 4070，经 Tailscale）只把文本变成向量</span><br><span class="line">   └──&gt; Qdrant（可丢弃、可从 SQLite 重建的索引）</span><br><span class="line">搜索：查询向量 → Qdrant 候选 → 逐条回到 SQLite 复核</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li><strong>SQLite 是唯一权威。</strong> 搜索结果都要回到 SQLite 复核，缺失、过期或来自其他模型的命中直接丢弃，<br>不做替换，也不回退到关键字搜索。</li>
+<li><strong>模型只是向量生成器。</strong> E5 区分角色：查询加 <code>query: </code> 前缀，Concept 文档加 <code>passage: </code> 前缀。<br>前缀只由版本化的表示类型决定（<code>concept_search_query_v2</code> 或 <code>concept_embedding_text_v1</code>），<br>不从文本内容推断。</li>
+<li><strong>部署身份不可变。</strong> <code>EMBEDDING_MODEL_ID</code> 是完整的部署 ID：模型版本、角色合同、<br>dtype、批处理策略和 manifest 摘要。任何会改变向量的配置都会产生新身份、新索引空间和新缓存，<br>两种模型的向量不会混在一起。</li>
+</ul>
+<h2 id="三、独立验收发现的问题"><a href="#三、独立验收发现的问题" class="headerlink" title="三、独立验收发现的问题"></a>三、独立验收发现的问题</h2><p>第一版（FLH-040）的作者测试都通过了，但独立验收（FLH-041）用两个 SQLite 连接复现了一个缺陷：<br>旧的索引运行在失去所有权后，仍能覆盖、清空新运行已完成的记账，因为只有最后的<br>“完成”一步做了所有权检查（独立测试）。</p>
+<p>FLH-042 的修复是：</p>
+<ul>
+<li><strong>租约。</strong> 每个索引空间同一时间只允许一个运行持有 SQLite 租约，每次记账写入都要验证租约。</li>
+<li><strong>私有集合。</strong> 每个运行写自己的 Qdrant 集合。</li>
+<li><strong>单点发布。</strong> 发布只是一次受租约保护的指针切换。</li>
+</ul>
+<p>第二轮独立验收（FLH-043）模拟了”写入已生效但确认丢失”：Qdrant 里有四个私有点，<br>SQLite 只记了两行。结果是命令退出 1、旧发布不变、恢复时零次嵌入调用，这项通过了。<br>同一轮还发现两个缺陷：</p>
+<ul>
+<li>搜索恰好遇到发布切换时，会把健康的新发布报告成”未构建”；</li>
+<li>健康的 <code>sync</code> 不会清理之前删除失败的旧集合。</li>
+</ul>
+<p>FLH-044 修复了这两项。此后，搜索遇到发布切换最多重试一次；连续两次切换就明确报错。</p>
+<p>这些设计的意义在于：Qdrant 和 SQLite 之间没有跨库事务，我也不声称有。能做到的是：<br>任何运行只写自己的集合，搜索只读已发布的指针，”健康”只来自对每个点的 ID、载荷和向量的<br>完整核对，而不是点的数量。<code>status</code> 把”记录的历史”和”当下核对的健康”分开显示。</p>
+<h2 id="四、显式索引与持久缓存"><a href="#四、显式索引与持久缓存" class="headerlink" title="四、显式索引与持久缓存"></a>四、显式索引与持久缓存</h2><p>文档向量缓存在 SQLite 里，键为（内容哈希, 表示, 模型身份, 维度）。只有 <code>semantic-index</code><br>命令会调用嵌入服务，搜索只嵌入一条查询，服务启动时不调用。FLH-060 演示在服务前加了一个计数网关，<br>分别统计查询和文档，并在发送前扣除预算。</p>
+<p>实现代理在 macOS 上对真实 E5 服务做了一次有预算的运行（作者测试），结果如下：</p>
+<ul>
+<li>用掉 9 次 POST、22 个位置：建索引 2 次 POST、15 个文档位置；7 次搜索各 1 个查询位置；</li>
+<li>关键字搜索 0 次调用；</li>
+<li>重启后 <code>sync</code> 0 次调用，<code>rebuild</code> 复用 15 个缓存向量、0 次调用；</li>
+<li>服务端 <code>/metrics</code> 的增量与网关计数一致。</li>
+</ul>
+<p>模拟服务离线时，语义搜索返回 502，关键字搜索和索引状态照常工作；恢复后无需重建。</p>
+<p>我本人在 NAS 上重做了这套演示（人工观察）：18&#x2F;18 项机械检查通过，同样是 9 次 POST、<br>22 个位置，<code>sync</code>&#x2F;<code>rebuild</code> 零调用，重启后数据仍在，离线和恢复行为符合预期。<br>浏览器交互没有测试。</p>
+<h2 id="五、GPU、Tailscale-与-float16"><a href="#五、GPU、Tailscale-与-float16" class="headerlink" title="五、GPU、Tailscale 与 float16"></a>五、GPU、Tailscale 与 float16</h2><p>E5 服务跑在我的 Windows 笔记本 RTX 4070 上，NAS 通过 Tailscale 访问它。嵌入服务在另一台机器上，<br>随时可能不在线，所以”服务不可用”必须是一个被明确处理的状态，而不是隐藏的回退。<br>FLH-058 的一次探索运行（独立测试）发现：同一文档在不同批次形状中，有 112 个重复向量超出了预先声明的容差。<br>报告认为 float16 加上按批填充是一个合理解释，但没有确认原因。</p>
+<p>于是 FLH-059 写了一个有界诊断：6 种配置，每种 456 个位置，判定规则事先登记。<br>我在那台 GPU 上运行了它（人工观察）：</p>
+<ul>
+<li>float16 <code>dynamic_v1</code>：359 次容差失败，32 个排序中有 4 个 top-5 顺序变化；</li>
+<li>float16 <code>singleton_v1</code>（每条输入单独编码）：424&#x2F;424 个比较向量逐位相等，零失败。</li>
+</ul>
+<p>所以现在用的是 singleton 部署。这只说明了这台机器、这组输入上的情况，不代表普遍的确定性。<br>我也没有做任何 GPU 性能基准。</p>
+<h2 id="六、检索评估：数字和它的边界"><a href="#六、检索评估：数字和它的边界" class="headerlink" title="六、检索评估：数字和它的边界"></a>六、检索评估：数字和它的边界</h2><p>FLH-058 用现有 Go 检索器跑同一个冻结夹具（48 个单目标查询，24 个 Concept），<br>Recall@5 结果如下：</p>
+<table>
+<thead>
+<tr>
+<th>检索器</th>
+<th>Recall@5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>E5</td>
+<td><strong>44&#x2F;48</strong>（MRR@5 0.653）</td>
+</tr>
+<tr>
+<td>BM25</td>
+<td>32&#x2F;48</td>
+</tr>
+<tr>
+<td>加权词法</td>
+<td>30&#x2F;48</td>
+</tr>
+<tr>
+<td>精确签名</td>
+<td>0&#x2F;48</td>
+</tr>
+</tbody></table>
+<p>精确签名得 0 是结构性的：这个夹具里没有可能匹配的签名。</p>
+<p>这些数字的局限必须一起说：</p>
+<ul>
+<li>标签是作者提出、<strong>未经人工审核</strong>的合成提案。</li>
+<li>每个 Concept 对应一对法语和英语改写，有 7 个例句在成对查询中重复出现。</li>
+<li>留出集与开发集在数量、否定、倒装等构造上语义相关，而且作者见过全部提案，<br>所以它不是盲测，也不能说明泛化。</li>
+<li>没有做显著性检验。</li>
+<li>top-1 上 E5 对加权词法丢了 4 题、对 BM25 丢了 5 题。</li>
+<li>4 个”无匹配”查询仍各返回 5 条结果，例如”PostgreSQL 备份”排出了 imparfait，分数 0.846。</li>
+</ul>
+<h2 id="七、一个诚实的失败"><a href="#七、一个诚实的失败" class="headerlink" title="七、一个诚实的失败"></a>七、一个诚实的失败</h2><p>在 FLH-060 的真实运行中（作者测试，原始证据在仓库外），”saying I don’t do something anymore”<br>排第一的是”tu me manques”（0.8531），按演示设计意图对应的”ne … plus”排第二（0.8426）。所有分数都挤在<br>0.81–0.87 之间。余弦分数不是概率，不是相关性判定，也不代表”同一 Concept”。<br>它只是排序依据，而这次的排序与设计意图不符。演示里的搜索句只是示例输入，不是标签，<br>所以这是一个观察，不是一次打分。</p>
+<h2 id="八、还没做的"><a href="#八、还没做的" class="headerlink" title="八、还没做的"></a>八、还没做的</h2><ul>
+<li>浏览器端验收；</li>
+<li>经人工审核的相关性标注，以及重新分组、去相关的留出集；</li>
+<li>任何新的模型实验都需要单独授权。</li>
+</ul>
+<p>这不是 RAG，没有训练模型，也不会自动把单元归入 Concept：<br>SAME 判定仍然只来自人工。</p>
+<h2 id="来源"><a href="#来源" class="headerlink" title="来源"></a>来源</h2><ul>
+<li>代码：<a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/internal/application/semantic_index.go" >semantic_index.go<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/internal/application/semantic_search.go" >semantic_search.go<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/migrations/010_semantic_index.sql" >migrations&#x2F;010<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/migrations/011_semantic_index_runs.sql" >migrations&#x2F;011<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/tree/main/cmd/semantic-index" >cmd&#x2F;semantic-index<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/tree/main/tools/embedding/e5" >E5 服务<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/tree/main/scripts/demo/flh060" >FLH-060 演示<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></li>
+<li>文档：<a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/SEMANTIC_SEARCH.md" >SEMANTIC_SEARCH.md<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></li>
+<li>报告：<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/validation/FLH-041-vector-search-acceptance.md" >FLH-041<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/validation/FLH-043-index-consistency-acceptance.md" >FLH-043<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/plans/FLH-045-retrieval-evaluation.md" >FLH-045 计划<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/validation/FLH-049-evaluation-and-ci.md" >FLH-049<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/validation/FLH-058-real-e5-exploration.md" >FLH-058<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/plans/FLH-059-e5-reproducibility.md" >FLH-059<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/validation/FLH-060-semantic-demo.md" >FLH-060<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>、<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/validation/FLH-061-nas-semantic-demo.md" >FLH-061<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></li>
+</ul>
+<p>真实运行的原始证据（逐条请求、计数器、诊断输出）保存在仓库之外。</p>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 给法语学习笔记加语义搜索：模型只负责生成向量</li>
+        <li><strong>作者:</strong> Sirui Liu</li>
+        <li><strong>创建于
+                :</strong> 2026-10-12 12:00:00</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2026-10-25 12:00:00
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://vanquisher.world/zh-CN/2026/10/12/flh-semantic-search-engineering/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Go/">#Go</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/SQLite/">#SQLite</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Engineering/">#Engineering</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/French-Learning-Hub/">#French Learning Hub</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2026/10/12/flh-semantic-search-engineering/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">Semantic search for French-learning notes: the model only makes vectors</span>
+						<span class="post-nav-item">上一篇</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2026/10/10/flh-knowledge-library-demo/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">A knowledge library that shows its sources, and a demo that tells the truth</span>
+						<span class="post-nav-item">下一篇</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">目录</div>
+		<div class="page-title">给法语学习笔记加语义搜索：模型只负责生成向量</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E5%85%B3%E9%94%AE%E5%AD%97%E6%90%9C%E7%B4%A2%E4%B8%8D%E5%A4%9F"><span class="nav-text">一、为什么关键字搜索不够</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E8%81%8C%E8%B4%A3%E5%88%92%E5%88%86%EF%BC%9A%E6%9D%83%E5%A8%81%E3%80%81%E7%94%9F%E6%88%90%E5%99%A8%E3%80%81%E7%B4%A2%E5%BC%95"><span class="nav-text">二、职责划分：权威、生成器、索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E7%8B%AC%E7%AB%8B%E9%AA%8C%E6%94%B6%E5%8F%91%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-text">三、独立验收发现的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E6%98%BE%E5%BC%8F%E7%B4%A2%E5%BC%95%E4%B8%8E%E6%8C%81%E4%B9%85%E7%BC%93%E5%AD%98"><span class="nav-text">四、显式索引与持久缓存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81GPU%E3%80%81Tailscale-%E4%B8%8E-float16"><span class="nav-text">五、GPU、Tailscale 与 float16</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E6%A3%80%E7%B4%A2%E8%AF%84%E4%BC%B0%EF%BC%9A%E6%95%B0%E5%AD%97%E5%92%8C%E5%AE%83%E7%9A%84%E8%BE%B9%E7%95%8C"><span class="nav-text">六、检索评估：数字和它的边界</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E4%B8%80%E4%B8%AA%E8%AF%9A%E5%AE%9E%E7%9A%84%E5%A4%B1%E8%B4%A5"><span class="nav-text">七、一个诚实的失败</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E8%BF%98%E6%B2%A1%E5%81%9A%E7%9A%84"><span class="nav-text">八、还没做的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9D%A5%E6%BA%90"><span class="nav-text">来源</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Sirui Liu</a>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.9.0</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container" role="dialog" aria-modal="true" aria-label="图片查看器">
+	<button class="image-viewer-close" type="button" aria-label="关闭">
+		<i class="fa-solid fa-xmark"></i>
+	</button>
+	<button class="image-viewer-prev" type="button" aria-label="上一页">
+		<i class="fa-solid fa-chevron-left"></i>
+	</button>
+	<div class="image-viewer-frame">
+		<img src="" alt="">
+	</div>
+	<div class="image-viewer-exif-panel hidden absolute left-1/2 bottom-20 -translate-x-1/2 w-[min(92vw,420px)] max-h-[60vh] overflow-hidden rounded-2xl bg-background-color-transparent-80 p-4 text-left shadow-redefine-flat backdrop-blur-md" role="dialog" aria-label="EXIF" aria-hidden="true">
+		<div class="flex items-center justify-between mb-3">
+			<span class="text-sm font-semibold text-first-text-color">EXIF</span>
+			<button class="image-viewer-exif-close flex h-8 w-8 items-center justify-center rounded-full bg-background-color-transparent-80 text-first-text-color transition hover:bg-background-color-transparent-40" type="button" aria-label="关闭">
+				<i class="fa-solid fa-xmark text-[0.65rem]"></i>
+			</button>
+		</div>
+		<div class="image-viewer-exif-cards grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1 scrollbar-hide"></div>
+		<template class="image-viewer-exif-card-template">
+			<div class="rounded-lg bg-background-color-transparent-40 px-3 py-2">
+				<div class="image-viewer-exif-card-header flex items-center gap-2 mb-1">
+					<i class="image-viewer-exif-card-icon fa-solid fa-circle-info text-xs text-third-text-color"></i>
+					<div class="image-viewer-exif-card-title text-xs font-semibold text-first-text-color"></div>
+				</div>
+				<div class="image-viewer-exif-card-items flex flex-col gap-1"></div>
+			</div>
+		</template>
+	</div>
+	<button class="image-viewer-exif-toggle flex items-center gap-2 hidden absolute left-1/2 bottom-6 -translate-x-1/2 rounded-full border border-border-color bg-background-color-transparent-80 px-4 py-2 text-first-text-color backdrop-blur-md transition hover:bg-background-color-transparent-40" type="button" aria-label="EXIF" aria-expanded="false">
+		<i class="fa-solid fa-circle-info text-xs"></i>
+		<span class="text-xs font-semibold uppercase tracking-wider">EXIF</span>
+	</button>
+	<button class="image-viewer-next" type="button" aria-label="下一页">
+		<i class="fa-solid fa-chevron-right"></i>
+	</button>
+</div>
+
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    window.swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+
+    window.dispatchEvent(
+        new CustomEvent("redefine:swup:ready", {
+            detail: {
+                swup: window.swup,
+            },
+        }),
+    );
+</script>
+
+
+
+
+	
+<script src="/js/build/main.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+
+
+
+    
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@11.6.0/dist/mermaid.min.js"></script>
+    
+
+
+
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+
+	
+</body>
+
+</html>

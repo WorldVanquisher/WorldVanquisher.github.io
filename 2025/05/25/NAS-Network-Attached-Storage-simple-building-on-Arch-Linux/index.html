@@ -506,7 +506,7 @@
         <div class="label text-third-text-color text-sm">Categories</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">16</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">32</div>
         <div class="label text-third-text-color text-sm">Posts</div>
     </a>
 </div>
@@ -543,7 +543,7 @@
 				<div class="author flex items-center">
 					<span class="name text-default-text-color text-lg font-semibold">Sirui Liu</span>
 					
-					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv3</span>
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv4</span>
 					
 				</div>
 				<div class="meta-info">
@@ -569,7 +569,7 @@
     
     
         <span class="article-wordcount article-meta-item">
-            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>843 Words</span>
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>848 Words</span>
         </span>
     
     
@@ -593,7 +593,8 @@
 
 
 		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
-			<p>Very first blog I have ever written. Yoroshiku.</p>
+			<p><strong>Language:</strong> English | <a href="/zh-CN/2025/05/25/NAS-Network-Attached-Storage-simple-building-on-Arch-Linux/">简体中文</a></p>
+<p>Very first blog I have ever written. Yoroshiku.</p>
 <details class="relative my-4 border border-border-color bg-second-background-color rounded-md  blue" data-header-exclude><summary class="px-4 py-2 rounded-md shadow-[0_0_2px_0_var(--shadow-color-1)] cursor-pointer not-markdown"><i class="fa-solid fa-chevron-right"></i>Yappings</summary><div class="content p-4 "><p>I’m having a lot of trouble landing an early co-op job.<br>Right now the only “experience” on my résumé is <strong>WE Accelerate</strong>, which feels pretty useless.<br>By the time this post goes live I’ll have finished my first round of job hunting— I fired off nearly 50 résumés and got <strong>ZERO</strong> interviews.</p>
 <p>Most of my friends have at least gotten one interview. I’m just wondering why.</p>
 <p>Hopefully I’ll snag something in Cycle 2. Good luck to me.</p>
@@ -648,14 +649,14 @@
 </tr>
 </tbody></table>
 <p>So outsiders can read this directory but can’t write to it.<br>Well, my NAS is only open to me for mysterious reasons.<br>I’ll probably <code>chmod 700</code> instead of <code>755</code> because I’m the sole user— explanation coming soon.</p>
-<h3 id="Add-NAS-users-Where-is-“s”"><a href="#Add-NAS-users-Where-is-“s”" class="headerlink" title="Add NAS users Where is “s”?"></a>Add NAS users <del>Where is “s”?</del></h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> useradd -M -s /usr/bin/nologin nasuser  <span class="comment">#Change nasuser into anything you want for example worldvanquisher</span></span><br><span class="line"><span class="built_in">sudo</span> passwd nauser  <span class="comment">#set password</span></span><br><span class="line"><span class="built_in">sudo</span> smbpasswd -a nasuser  <span class="comment"># now give it a *Samba* password – this is what Windows/Mac will ask for</span></span><br></pre></td></tr></table></figure></div>
+<h3 id="Add-NAS-users-Where-is-“s”"><a href="#Add-NAS-users-Where-is-“s”" class="headerlink" title="Add NAS users Where is “s”?"></a>Add NAS users <del>Where is “s”?</del></h3><div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> useradd -M -s /usr/bin/nologin nasuser  <span class="comment">#Change nasuser into anything you want for example worldvanquisher</span></span><br><span class="line"><span class="built_in">sudo</span> passwd nasuser  <span class="comment">#set password</span></span><br><span class="line"><span class="built_in">sudo</span> smbpasswd -a nasuser  <span class="comment"># now give it a *Samba* password – this is what Windows/Mac will ask for</span></span><br></pre></td></tr></table></figure></div>
 <p>No need to explain more. If you cannot understand this, you are not even suitable for NAS deploying. Go back to The Linux Command Line by William Shots it’s even free online.</p>
 <h3 id="Minimal-samba-conf-file"><a href="#Minimal-samba-conf-file" class="headerlink" title="Minimal samba conf file"></a>Minimal samba conf file</h3><p>Arch Deleted a sample samba config file for some reason. That is to say, we have to write a minimal samba config file。</p>
 <div class="code-container" data-rel="Ini"><figure class="iseeu highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[global]</span></span><br><span class="line">   <span class="attr">workgroup</span> = WORKGROUP</span><br><span class="line">   server <span class="attr">string</span> = Samba Server</span><br><span class="line">   <span class="attr">security</span> = user</span><br><span class="line">   map to <span class="attr">guest</span> = Bad User</span><br><span class="line"></span><br><span class="line"><span class="section">[Public]</span></span><br><span class="line">   <span class="attr">path</span> = /srv/samba/public</span><br><span class="line">   <span class="attr">browseable</span> = <span class="literal">yes</span></span><br><span class="line">   read <span class="attr">only</span> = <span class="literal">no</span></span><br><span class="line">   guest <span class="attr">ok</span> = <span class="literal">yes</span></span><br></pre></td></tr></table></figure></div>
 
 <p><em>Wait wait wait what the hell is that?</em><br>No need to focus on that. This is the minimal script from Arch Wiki which would magically push samba to work.<br>If you do really care, check Arch Linux Wiki. It will help solve the problem.</p>
 <p>Good. Now you should check the syntax of this strange document.</p>
-<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">test</span> parm</span><br><span class="line"><span class="built_in">sudo</span> systemctl restart smb</span><br></pre></td></tr></table></figure></div>
+<div class="code-container" data-rel="Bash"><figure class="iseeu highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">testparm</span><br><span class="line"><span class="built_in">sudo</span> systemctl restart smb</span><br></pre></td></tr></table></figure></div>
 <p>If nothing explodes, Conguatulations you have survived!</p>
 <h3 id="Exposing-the-share-over-Tailscale-lazy-VPN-method"><a href="#Exposing-the-share-over-Tailscale-lazy-VPN-method" class="headerlink" title="Exposing the share over Tailscale (lazy VPN method)"></a>Exposing the share over Tailscale (lazy VPN method)</h3><ol>
 <li><p>Machine is already in my tailnet: <code>tailscale up</code></p>
@@ -722,12 +723,12 @@
 		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
 			
 			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
-				<a class="prev" rel="prev" href="/2025/06/02/Notes/">
+				<a class="prev" rel="prev" href="/zh-CN/2025/06/02/Notes/">
 					<span class="left arrow-icon flex justify-center items-center">
 						<i class="fa-solid fa-chevron-left"></i>
 					</span>
 					<span class="title flex justify-center items-center">
-						<span class="post-nav-title-item truncate max-w-48">ECE192 – Pre-test 1 Minimal Notes</span>
+						<span class="post-nav-title-item truncate max-w-48">ECE192：第一次测验复习笔记</span>
 						<span class="post-nav-item">Prev posts</span>
 					</span>
 				</a>
@@ -735,9 +736,9 @@
 			
 			
 			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
-				<a class="next" rel="next" href="/2025/04/27/test/">
+				<a class="next" rel="next" href="/zh-CN/2025/05/25/NAS-Network-Attached-Storage-simple-building-on-Arch-Linux/">
 					<span class="title flex justify-center items-center">
-						<span class="post-nav-title-item truncate max-w-48">test</span>
+						<span class="post-nav-title-item truncate max-w-48">在 Arch Linux 上搭建个人 NAS：Samba 与 Tailscale 入门</span>
 						<span class="post-nav-item">Next posts</span>
 					</span>
 					<span class="right arrow-icon flex justify-center items-center">
