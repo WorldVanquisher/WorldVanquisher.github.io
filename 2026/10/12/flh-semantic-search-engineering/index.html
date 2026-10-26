@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    
+    <meta name="author" content="Sirui Liu">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes ASAP (before DOMContentLoaded)
+            (function() {
+                const addBodyClass = () => {
+                    const b = document.body;
+                    if (!b) return false;
+                    b.classList.add(theme + "-mode");
+                    return true;
+                };
+
+                // Try immediately
+                if (addBodyClass()) return;
+
+                // Observe until body exists
+                const mo = new MutationObserver(() => {
+                    if (addBodyClass()) mo.disconnect();
+                });
+                mo.observe(document.documentElement, { childList: true, subtree: true });
+            })();
+        })();
+    </script>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://vanquisher.world/2026/10/12/flh-semantic-search-engineering/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+        
+        <meta name="description" content="Sirui Liu — backend systems, infrastructure, developer tools and applied AI.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Semantic search for French-learning notes: the model only makes vectors">
+<meta property="og:url" content="https://vanquisher.world/2026/10/12/flh-semantic-search-engineering/index.html">
+<meta property="og:site_name" content="Sirui&#39;s blog">
+<meta property="og:description" content="Sirui Liu — backend systems, infrastructure, developer tools and applied AI.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://vanquisher.world/images/redefine-og.webp">
+<meta property="article:published_time" content="2026-10-12T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-25T16:00:00.000Z">
+<meta property="article:author" content="Sirui Liu">
+<meta property="article:tag" content="Go">
+<meta property="article:tag" content="SQLite">
+<meta property="article:tag" content="Engineering">
+<meta property="article:tag" content="French Learning Hub">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://vanquisher.world/images/redefine-og.webp">
+    
+    
+        <!-- Google tag (gtag.js) -->
+        <script src="https://www.googletagmanager.com/gtag/js?id="></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '');
+        </script>
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/127751002_p0.ico" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/127751002_p0.ico">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/127751002_p0.ico">
+    <!--- Page Info-->
+    
+    <title>
+        
+            Semantic search for French-learning notes: the model only makes vectors | Sirui&#39;s blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"vanquisher.world","root":"/","language":"en"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"dark"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Sirui Liu — backend systems, infrastructure, developer tools and applied AI."},"google_analytics":{"enable":true,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/87215848_p0-light.webp","dark":"/images/87215848_p0.webp"},"title":"Sirui's Blog","subtitle":{"text":["In Grief and Great Delight."],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#1f1e33"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":[{"icon":"fa-brands fa-github","url":"https://github.com/WorldVanquisher"},{"icon":"fa-brands fa-linkedin","url":"https://www.linkedin.com/in/s3liu/"},{"icon":"fa-solid fa-at","url":"mailto:s789liu@uwaterloo.ca"},{"icon":"fa-brands fa-instagram","url":"https://www.instagram.com/worldvanquisher1owx/"},{"icon":"/images/custom-icon.svg","url":null}],"qrs":[{"icon":"fa-brands fa-weixin","qr":"/images/Image_20250428055835.jpg"},{"icon":"fa-brands fa-qq","qr":"/images/A69BA84D7D9A5CFC745A2D4EF0499162.png"}]}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":true,"version":"11.6.0","theme":{"light":"default","dark":"dark"}}},"version":"2.9.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"Status":{"path":"none","icon":"fa-regular fa-chart-bar"},"About":{"icon":"fa-regular fa-user","submenus":{"Me":"/about","Github":"https://github.com/WorldVanquisher"}},"Friends":{"icon":"fa-solid fa-link","path":"/links"},"Tags":{"icon":"fa-solid fa-tags","path":"/tags/"},"Categories":{"icon":"fa-solid fa-folder","path":"/categories/"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur","masonry":{"batch_size":12,"initial_batch_size":24}},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"YYYY-MM-DD","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footer":{"runtime":true,"icon":"<i class=\"fa-solid fa-heart fa-beat\" style=\"--fa-animation-duration: 0.5s; color: #f54545\"></i>","start":"2025/5/06 11:45:14","statistics":false,"customize":null,"icp":{"enable":false,"number":null,"url":null}},"footerStart":"2025/5/06 11:45:14","mermaid":{"style":{"light":"default","dark":"dark"}}};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.i18n = {"search":"Search...","toc":"On this page","prev":"Prev","next":"Next","prev_posts":"Prev posts","next_posts":"Next posts","page":"Page %d","recent_posts":"Recent Posts","share":"Share","powered_by":"POWERED BY %s","theme":"THEME","rss_feed":"RSS Feed","category":"Category","categories":"Categories","tag":"Tag","tags":"Tags","post":"Post","posts":"Posts","tagcloud":"Tag Cloud","comment":"Comment","comments":"Comments","home":"Home","archive":"Archive","archives":"Archives","top":"TOP","sticky":"Sticky","go-back-home":"Go Back Home","masonry_loading":"Loading photos...","image_viewer":"Image viewer","close":"Close","exif":{"title":"EXIF","cards":{"camera":"Camera","lens":"Lens","exposure":"Exposure","other":"Other"},"fields":{"make":"Brand","model":"Model","date_taken":"Date taken","lens_model":"Lens","focal_length":"Focal length","focus_mode":"Focus mode","shutter":"Shutter","aperture":"Aperture","iso":"ISO","exposure_program":"Exposure program","exposure_compensation":"Exposure compensation","metering_mode":"Metering mode","flash":"Flash","white_balance":"White balance","latitude":"Latitude","longitude":"Longitude","altitude":"Altitude"},"status":{"loading":"Loading...","no_exif":"No EXIF available","library_missing":"EXIF library not loaded","image_source_missing":"Image source unavailable","unavailable":"EXIF unavailable (blocked by CORS or missing metadata)","flag_unavailable":"EXIF unavailable"}},"about":"About","changelog":"Changelog","links":"Links","link":"Link","friends":"Friends","friend":"Friend","timeline":"Timeline","shuoshuo":"Shuoshuo","bookmarks":"Bookmarks","site_uv":"VISITOR COUNT","site_pv":"TOTAL PAGE VIEWS","read_more":"Read more","wordcount":"Words","min2read":"Mins","status":"Status","runtime":"Blog up for","days":"days","hours":"hrs","minutes":"Min","seconds":"Sec","optimized_by":"and Optimized by Evan","rights":"All Rights Reserved","site_posts":"%s posts in total","site_wordcount":"%s words in total","copyright":{"author":"Author","title":"Title","link":"Link","create_time":"Created at","update_time":"Updated at","license_title":"License","license_content":"This work is licensed under %s.","all_rights_reserved":"All Rights Reserved &#169; %s","public_domain":"This work is in the public domain."},"ago":{"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"},"create_time":"Created","update_time":"Updated","expired":"This post is written %s days ago, and the content may not be up to date."};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+                <a class="logo-image h-8 w-8 sm:w-10 sm:h-10 mr-3" href="/">
+                    <img src="/images/127751002_p0.ico" class="w-full h-full rounded-xs">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                Sirui&#39;s blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    HOME
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    ARCHIVES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="has-dropdown"
+                                   href="#"
+                                        onClick=&#34;return false;&#34;>
+                                    <i class="fa-regular fa-user fa-fw"></i>
+                                    ABOUT
+                                    <i class="fa-solid fa-chevron-down fa-fw"></i>
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                                    <ul class="sub-menu">
+                                        
+                                            <li>
+                                                <a href="/about">
+                                                    ME
+                                                </a>
+                                            </li>
+                                        
+                                            <li>
+                                                <a target="_blank" rel="noopener" href="https://github.com/WorldVanquisher">
+                                                    GITHUB
+                                                </a>
+                                            </li>
+                                        
+                                    </ul>
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/links"
+                                        >
+                                    <i class="fa-solid fa-link fa-fw"></i>
+                                    FRIENDS
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/tags/"
+                                        >
+                                    <i class="fa-solid fa-tags fa-fw"></i>
+                                    TAGS
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/categories/"
+                                        >
+                                    <i class="fa-solid fa-folder fa-fw"></i>
+                                    CATEGORIES
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                HOME
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                ARCHIVES
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                
+                    
+
+                    <li class="drawer-navbar-item-sub text-base my-1.5 flex flex-col w-full">
+                        
+                        <div class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary cursor-pointer text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                             navbar-data-toggle="submenu-About"
+                        >
+                            <span>
+                                ABOUT
+                            </span>
+                            
+                                <i class="fa-solid fa-chevron-right fa-sm fa-fw transition-all"></i>
+                            
+                        </div>
+                        
+
+                        
+                            <div class="flex-col items-start px-2 py-2 hidden" data-target="submenu-About">
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           href="/about">ME</a>
+                                    </div>
+                                
+                                    <div class="drawer-navbar-item text-base flex flex-col justify-center items-start hover:underline active:underline hover:underline-offset-1 rounded-3xl">
+                                        <a class=" text-third-text-color text-xl"
+                                           target="_blank" rel="noopener" href="https://github.com/WorldVanquisher">GITHUB</a>
+                                    </div>
+                                
+                            </div>
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/links"
+                        >
+                            <span>
+                                FRIENDS
+                            </span>
+                            
+                                <i class="fa-solid fa-link fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/tags/"
+                        >
+                            <span>
+                                TAGS
+                            </span>
+                            
+                                <i class="fa-solid fa-tags fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/categories/"
+                        >
+                            <span>
+                                CATEGORIES
+                            </span>
+                            
+                                <i class="fa-solid fa-folder fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">15</div>
+        <div class="label text-third-text-color text-sm">Tags</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">1</div>
+        <div class="label text-third-text-color text-sm">Categories</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">16</div>
+        <div class="label text-third-text-color text-sm">Posts</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="post-page-container flex relative justify-between box-border w-full h-full">
+	<div class="article-content-container">
+
+		<div class="article-title relative w-full">
+			
+			<div class="w-full flex items-center pt-6 justify-start">
+				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">Semantic search for French-learning notes: the model only makes vectors</h1>
+			</div>
+			
+		</div>
+
+		
+		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+			<div class="avatar w-[46px] h-[46px] shrink-0 rounded-medium border border-border-color p-px">
+				<img src="/images/127751002_p0.ico">
+			</div>
+			<div class="info flex flex-col justify-between">
+				<div class="author flex items-center">
+					<span class="name text-default-text-color text-lg font-semibold">Sirui Liu</span>
+					
+					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv3</span>
+					
+				</div>
+				<div class="meta-info">
+					<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2026-10-12 12:00</span>
+        <span class="mobile">2026-10-12 12:00</span>
+        <span class="hover-info">Created</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2026-10-25 12:00</span>
+            <span class="mobile">2026-10-25 12:00</span>
+            <span class="hover-info">Updated</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Go/">Go</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/SQLite/">SQLite</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Engineering/">Engineering</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/French-Learning-Hub/">French Learning Hub</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fa-regular fa-typewriter"></i>&nbsp;<span>1.4k Words</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fa-regular fa-clock"></i>&nbsp;<span>8 Mins</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+				</div>
+			</div>
+		</div>
+		
+
+		
+
+
+		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+			<blockquote>
+<p>发布日期：2026-10-12（America&#x2F;Toronto，按对应主分支里程碑）。实际补发：2026-10-25。本文为项目回顾，后续进展见系列文章。</p>
+</blockquote>
+<p>I added persistent semantic retrieval to FLH, connecting a Windows RTX 4070 embedding service to a Linux NAS through Tailscale. The work covers Qdrant publication, reusable SQLite vector caches, bounded model calls and GPU reproducibility diagnostics.</p>
+<p><strong>Engineering focus:</strong> AI infrastructure, index consistency and reproducible evaluation.</p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/blog/flh-semantic-search-engineering.md" >中文版草稿<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>.</p>
+<p>French Learning Hub (FLH) is my personal French-learning service. I record the<br>questions I meet while learning, the system extracts knowledge units, and I<br>organize them into durable Concepts (for example “depuis for something still<br>going on”). I ran the GPU diagnostic and the<br>NAS acceptance myself. This article separates four kinds of evidence:</p>
+<ul>
+<li><strong>facts:</strong> code and schema;</li>
+<li><strong>author tests:</strong> tests the implementing agent ran itself;</li>
+<li><strong>independent tests:</strong> acceptance by a different agent;</li>
+<li><strong>human observations:</strong> results I executed myself and the agents did not<br>re-check.</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="Why-keyword-search-was-not-enough"><a href="#Why-keyword-search-was-not-enough" class="headerlink" title="Why keyword search was not enough"></a>Why keyword search was not enough</h2><p>The Knowledge Library already had keyword prefix search, with no stemming,<br>synonyms or semantics. What you are looking for is often a meaning, perhaps<br>phrased in English, while a Concept’s identity is a French grammar point.</p>
+<p>In the FLH-060 demo’s real-model run (author test, synthetic data):</p>
+<ul>
+<li>the keyword <code>weather</code> returned nothing;</li>
+<li>the semantic query “what the weather was like when I was a child” ranked<br>“imparfait for background and habits in the past” first;</li>
+<li>the keyword <code>miss</code> found “tu me manques” only because the title happens to<br>contain the word “miss”.</li>
+</ul>
+<h2 id="Who-owns-what-authority-generator-index"><a href="#Who-owns-what-authority-generator-index" class="headerlink" title="Who owns what: authority, generator, index"></a>Who owns what: authority, generator, index</h2><div class="code-container" data-rel="Text"><figure class="iseeu highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SQLite (authority: Concepts + vector cache + publication pointer)</span><br><span class="line">   │  semantic-index build/sync/rebuild (explicit commands)</span><br><span class="line">   ├──&gt; E5 service (Windows RTX 4070, over Tailscale): text in, vectors out</span><br><span class="line">   └──&gt; Qdrant (a disposable index, rebuildable from SQLite)</span><br><span class="line">search: query vector → Qdrant candidates → each one re-checked against SQLite</span><br></pre></td></tr></table></figure></div>
+
+<ul>
+<li><strong>SQLite is the only authority.</strong> Every search hit is re-checked against<br>SQLite. Missing, stale or foreign-model hits are dropped, never substituted,<br>and search never falls back to keywords.</li>
+<li><strong>The model is only a vector generator.</strong><ul>
+<li>E5 has roles: queries get the <code>query: </code> prefix and Concept documents<br><code>passage: </code>.</li>
+<li>The prefix comes only from the versioned representation and type<br>(<code>concept_search_query_v2</code> or <code>concept_embedding_text_v1</code>), never from the<br>text.</li>
+</ul>
+</li>
+<li><strong>Deployment identity is immutable.</strong><ul>
+<li><code>EMBEDDING_MODEL_ID</code> is the full deployment id: model revision, role<br>contract, dtype, batching policy and a manifest digest.</li>
+<li>Any setting that changes vectors gets a new identity, a new index space and<br>a new cache, so two models’ vectors never mix.</li>
+</ul>
+</li>
+</ul>
+<h2 id="What-independent-acceptance-found"><a href="#What-independent-acceptance-found" class="headerlink" title="What independent acceptance found"></a>What independent acceptance found</h2><p>The first version (FLH-040) passed its author tests.</p>
+<p><strong>FLH-041 (independent test).</strong> Acceptance reproduced a defect using two SQLite<br>connections. An older index run that had lost ownership could still overwrite<br>and clear a newer run’s completed bookkeeping, because only the final<br>“complete” step checked ownership.</p>
+<p><strong>FLH-042’s fix:</strong></p>
+<ul>
+<li><strong>Lease:</strong> one run per index space holds a SQLite lease, and every<br>bookkeeping write is checked against it.</li>
+<li><strong>Private collections:</strong> each run writes its own Qdrant collection.</li>
+<li><strong>Single-point publication:</strong> publishing is one lease-fenced pointer switch.</li>
+</ul>
+<p><strong>FLH-043 (second independent acceptance).</strong> It simulated a write that took<br>effect but whose acknowledgement was lost: Qdrant held four private points<br>while SQLite recorded two rows. The command exited 1, the previous publication<br>was unchanged, and recovery made zero embedding calls. That case passed. The<br>same pass found two defects:</p>
+<ul>
+<li>a search that met a publication switch reported the healthy new publication<br>as “not built”;</li>
+<li>a healthy <code>sync</code> didn’t clean up an old collection whose deletion had failed.</li>
+</ul>
+<p><strong>FLH-044</strong> fixed both. A search now retries at most once on a publication<br>switch, and a second switch is an explicit error.</p>
+<p>What this adds up to:</p>
+<ul>
+<li>There is no transaction across Qdrant and SQLite, and I don’t claim one.</li>
+<li>Each run writes only its own collection, and search reads only the published<br>pointer.</li>
+<li>“Healthy” comes only from a full check of every point’s id, payload and<br>vector, never from a point count.</li>
+<li><code>status</code> shows recorded history and currently verified health separately.</li>
+</ul>
+<h2 id="Explicit-indexing-and-a-persistent-cache"><a href="#Explicit-indexing-and-a-persistent-cache" class="headerlink" title="Explicit indexing and a persistent cache"></a>Explicit indexing and a persistent cache</h2><p>Document vectors are cached in SQLite, keyed by (content hash, representation,<br>model identity, dimensions). Only the <code>semantic-index</code> command calls the<br>embedding service. A search embeds just its query, and server startup sends no<br>embedding requests. The FLH-060 demo puts a counting gateway in front of the<br>service: it counts queries and documents separately, and charges a budget<br>before sending.</p>
+<p><strong>Budgeted macOS run (author test).</strong> The implementing agent ran the demo once<br>against the real E5 service:</p>
+<ul>
+<li>9 POSTs and 22 positions in all: indexing took 2 POSTs with 15 document<br>positions, and 7 searches each took 1 query position;</li>
+<li>keyword search made 0 calls;</li>
+<li>after a restart, <code>sync</code> made 0 calls, and <code>rebuild</code> reused all 15 cached<br>vectors with 0 calls;</li>
+<li>the service’s own <code>/metrics</code> deltas matched the gateway’s counts.</li>
+</ul>
+<p>With the service simulated offline, semantic search returned 502 while keyword<br>search and index status kept working. After recovery, no rebuild was needed.</p>
+<p><strong>NAS rerun (human observation).</strong> I reran the demo on the NAS myself:</p>
+<ul>
+<li>18&#x2F;18 mechanical checks passed;</li>
+<li>again 9 POSTs and 22 positions;</li>
+<li>zero calls for <code>sync</code>&#x2F;<code>rebuild</code>;</li>
+<li>the data survived a restart;</li>
+<li>offline and recovery behaved as expected.</li>
+</ul>
+<p>Browser interaction was not tested.</p>
+<h2 id="GPU-Tailscale-and-float16"><a href="#GPU-Tailscale-and-float16" class="headerlink" title="GPU, Tailscale and float16"></a>GPU, Tailscale and float16</h2><p>The E5 service runs on my Windows laptop’s RTX 4070, and the NAS reaches it<br>through Tailscale. Because the embedding service is on another machine and may<br>be offline at any time, “service unavailable” has to be an explicitly handled<br>state, not a hidden fallback.</p>
+<p><strong>FLH-058 (independent test).</strong> One exploratory run found that identical<br>documents encoded in different batch shapes gave 112 repeated vectors outside<br>the previously declared tolerance. The report named float16 plus per-batch<br>padding as a plausible explanation, without establishing the cause.</p>
+<p><strong>FLH-059</strong> wrote a bounded diagnostic: 6 configurations of 456 positions each,<br>with a pre-registered rule. I ran it on that GPU (human observation):</p>
+<ul>
+<li>float16 <code>dynamic_v1</code>: 359 tolerance failures, and 4 of 32 rankings changed<br>their top-5 order;</li>
+<li>float16 <code>singleton_v1</code> (each input encoded alone): 424&#x2F;424 compared vectors<br>bitwise equal, with zero failures.</li>
+</ul>
+<p>So the service now runs the singleton deployment. This describes this machine<br>and this input set only; it is not a universal determinism claim. No GPU<br>benchmark was run either.</p>
+<h2 id="Retrieval-evaluation-the-numbers-and-their-limits"><a href="#Retrieval-evaluation-the-numbers-and-their-limits" class="headerlink" title="Retrieval evaluation: the numbers and their limits"></a>Retrieval evaluation: the numbers and their limits</h2><p>FLH-058 ran the existing Go retrievers on one frozen fixture of 48<br>single-target queries against 24 Concepts:</p>
+<table>
+<thead>
+<tr>
+<th>Retriever</th>
+<th>Recall@5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>E5</td>
+<td><strong>44&#x2F;48</strong> (MRR@5 0.653)</td>
+</tr>
+<tr>
+<td>BM25</td>
+<td>32&#x2F;48</td>
+</tr>
+<tr>
+<td>Weighted lexical</td>
+<td>30&#x2F;48</td>
+</tr>
+<tr>
+<td>Exact signature</td>
+<td>0&#x2F;48</td>
+</tr>
+</tbody></table>
+<p>The exact zero is structural: no signature in this fixture can match.</p>
+<p>The limits belong with the numbers:</p>
+<ul>
+<li>The labels are author-proposed synthetic proposals, <strong>not reviewed by a<br>human</strong>.</li>
+<li>Each Concept has a pair of French and English paraphrases, and 7 example<br>strings recur within those pairs.</li>
+<li><strong>Not blind:</strong> the held-out and development sets are semantically related on<br>quantity, negation and inversion constructions, and the author saw every<br>proposal. It is not a blind test and says nothing about generalization.</li>
+<li>No significance test was run.</li>
+<li>At top 1, E5 lost 4 cases that weighted lexical got right and 5 that BM25 got<br>right.</li>
+<li><strong>No-match queries:</strong> the 4 still returned 5 results each. For example,<br>“PostgreSQL backup” ranked imparfait first at 0.846.</li>
+</ul>
+<h2 id="An-honest-failure"><a href="#An-honest-failure" class="headerlink" title="An honest failure"></a>An honest failure</h2><p>In the FLH-060 real-model run (author test; raw evidence outside the<br>repository), “saying I don’t do something anymore” ranked “tu me manques”<br>first (0.8531). The demo’s intended pairing, “ne … plus”, came second (0.8426).</p>
+<p>All scores sat between 0.81 and 0.87. A cosine score is not a probability, not<br>a relevance judgment and not a “same Concept” decision; it only orders<br>results, and here the order did not match the design intent. The demo’s search<br>sentences are example inputs, not labels, so this is an observation, not a<br>score.</p>
+<h2 id="What-remains"><a href="#What-remains" class="headerlink" title="What remains"></a>What remains</h2><ul>
+<li>Browser acceptance.</li>
+<li>Human-reviewed relevance labels, and a regrouped, decorrelated holdout.</li>
+<li>Any new model experiment, which needs its own authorization.</li>
+</ul>
+<p>This is not RAG, no model was trained, and nothing automatically files units<br>under Concepts: SAME decisions still come only from a human.</p>
+<h2 id="Sources"><a href="#Sources" class="headerlink" title="Sources"></a>Sources</h2><ul>
+<li><strong>Code:</strong><br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/internal/application/semantic_index.go" >semantic_index.go<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>,<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/internal/application/semantic_search.go" >semantic_search.go<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>,<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/migrations/010_semantic_index.sql" >migrations&#x2F;010<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>,<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/migrations/011_semantic_index_runs.sql" >migrations&#x2F;011<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>,<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/tree/main/cmd/semantic-index" >cmd&#x2F;semantic-index<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>,<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/tree/main/tools/embedding/e5" >E5 service<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>,<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/tree/main/scripts/demo/flh060" >FLH-060 demo<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></li>
+<li><strong>Guide:</strong> <a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/SEMANTIC_SEARCH.md" >SEMANTIC_SEARCH.md<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></li>
+<li><strong>Reports:</strong><br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/validation/FLH-041-vector-search-acceptance.md" >FLH-041<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>,<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/validation/FLH-043-index-consistency-acceptance.md" >FLH-043<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>,<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/plans/FLH-045-retrieval-evaluation.md" >FLH-045 plan<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>,<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/validation/FLH-049-evaluation-and-ci.md" >FLH-049<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>,<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/validation/FLH-058-real-e5-exploration.md" >FLH-058<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>,<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/plans/FLH-059-e5-reproducibility.md" >FLH-059<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>,<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/validation/FLH-060-semantic-demo.md" >FLH-060<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>,<br><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/blob/main/docs/validation/FLH-061-nas-semantic-demo.md" >FLH-061<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></li>
+</ul>
+<p>Raw evidence from the real runs (individual requests, counters, diagnostic<br>output) is kept outside the repository.</p>
+<hr>
+<p><a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub" >FLH repository<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a> · <a href="/categories/French-Learning-Hub/">All FLH posts</a></p>
+<p>Implementation used AI coding agents under my direction, task definitions and review. Verification results are the linked repository records. Publication date follows <a class="link"   target="_blank" rel="noopener" href="https://github.com/WorldVanquisher/french-learning-hub/commit/0a991e0503ea384b761e95e1f7e927adcf6fb608" >main-branch milestone 0a991e0<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>; the 12:00 display time is editorial.</p>
+
+		</div>
+
+		
+		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+			<div class="article-copyright-info-container">
+    <ul>
+        <li><strong>Title:</strong> Semantic search for French-learning notes: the model only makes vectors</li>
+        <li><strong>Author:</strong> Sirui Liu</li>
+        <li><strong>Created at
+                :</strong> 2026-10-12 12:00:00</li>
+        
+            <li>
+                <strong>Updated at
+                    :</strong> 2026-10-25 12:00:00
+            </li>
+        
+        <li>
+            <strong>Link:</strong> https://vanquisher.world/2026/10/12/flh-semantic-search-engineering/
+        </li>
+        <li>
+            <strong>
+                License:
+            </strong>
+            
+
+            
+                This work is licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a>.
+            
+        </li>
+    </ul>
+</div>
+
+		</div>
+		
+
+		
+		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Go/">#Go</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/SQLite/">#SQLite</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/Engineering/">#Engineering</a>&nbsp;
+			</li>
+			
+			<li class="tag-item mx-0.5">
+				<a href="/tags/French-Learning-Hub/">#French Learning Hub</a>&nbsp;
+			</li>
+			
+		</ul>
+		
+
+		
+
+		
+		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+			
+			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="prev" rel="prev" href="/2026/10/14/flh-hybrid-search/">
+					<span class="left arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-left"></i>
+					</span>
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">Building explainable hybrid search with Go, SQLite and Qdrant</span>
+						<span class="post-nav-item">Prev posts</span>
+					</span>
+				</a>
+			</div>
+			
+			
+			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+				<a class="next" rel="next" href="/2026/10/10/flh-knowledge-library-demo/">
+					<span class="title flex justify-center items-center">
+						<span class="post-nav-title-item truncate max-w-48">A knowledge library that shows its sources, and a demo that tells the truth</span>
+						<span class="post-nav-item">Next posts</span>
+					</span>
+					<span class="right arrow-icon flex justify-center items-center">
+						<i class="fa-solid fa-chevron-right"></i>
+					</span>
+				</a>
+			</div>
+			
+		</div>
+		
+
+
+		
+	</div>
+
+	
+	<div class="toc-content-container">
+		<div class="post-toc-wrap">
+	<div class="post-toc">
+		<div class="toc-title">On this page</div>
+		<div class="page-title">Semantic search for French-learning notes: the model only makes vectors</div>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-keyword-search-was-not-enough"><span class="nav-text">Why keyword search was not enough</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Who-owns-what-authority-generator-index"><span class="nav-text">Who owns what: authority, generator, index</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-independent-acceptance-found"><span class="nav-text">What independent acceptance found</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Explicit-indexing-and-a-persistent-cache"><span class="nav-text">Explicit indexing and a persistent cache</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GPU-Tailscale-and-float16"><span class="nav-text">GPU, Tailscale and float16</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Retrieval-evaluation-the-numbers-and-their-limits"><span class="nav-text">Retrieval evaluation: the numbers and their limits</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#An-honest-failure"><span class="nav-text">An honest failure</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-remains"><span class="nav-text">What remains</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sources"><span class="nav-text">Sources</span></a></li></ol>
+
+	</div>
+</div>
+	</div>
+	
+</div>
+
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2025</span>
+              -
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Sirui Liu</a>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">VISITOR COUNT</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">TOTAL PAGE VIEWS</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">POWERED BY <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.9.0</a></span>
+        </div>
+        
+        
+            <div>
+                Blog up for <span class="odometer" id="runtime_days" ></span> days <span class="odometer" id="runtime_hours"></span> hrs <span class="odometer" id="runtime_minutes"></span> Min <span class="odometer" id="runtime_seconds"></span> Sec
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+	<div class="post-tools">
+		<div class="post-tools-container">
+	<ul class="article-tools-list">
+		<!-- TOC aside toggle -->
+		
+		<li class="right-bottom-tools page-aside-toggle">
+			<i class="fa-regular fa-outdent"></i>
+		</li>
+		
+
+		<!-- go comment -->
+		
+	</ul>
+</div>
+	</div>
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container" role="dialog" aria-modal="true" aria-label="Image viewer">
+	<button class="image-viewer-close" type="button" aria-label="Close">
+		<i class="fa-solid fa-xmark"></i>
+	</button>
+	<button class="image-viewer-prev" type="button" aria-label="Prev">
+		<i class="fa-solid fa-chevron-left"></i>
+	</button>
+	<div class="image-viewer-frame">
+		<img src="" alt="">
+	</div>
+	<div class="image-viewer-exif-panel hidden absolute left-1/2 bottom-20 -translate-x-1/2 w-[min(92vw,420px)] max-h-[60vh] overflow-hidden rounded-2xl bg-background-color-transparent-80 p-4 text-left shadow-redefine-flat backdrop-blur-md" role="dialog" aria-label="EXIF" aria-hidden="true">
+		<div class="flex items-center justify-between mb-3">
+			<span class="text-sm font-semibold text-first-text-color">EXIF</span>
+			<button class="image-viewer-exif-close flex h-8 w-8 items-center justify-center rounded-full bg-background-color-transparent-80 text-first-text-color transition hover:bg-background-color-transparent-40" type="button" aria-label="Close">
+				<i class="fa-solid fa-xmark text-[0.65rem]"></i>
+			</button>
+		</div>
+		<div class="image-viewer-exif-cards grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto pr-1 scrollbar-hide"></div>
+		<template class="image-viewer-exif-card-template">
+			<div class="rounded-lg bg-background-color-transparent-40 px-3 py-2">
+				<div class="image-viewer-exif-card-header flex items-center gap-2 mb-1">
+					<i class="image-viewer-exif-card-icon fa-solid fa-circle-info text-xs text-third-text-color"></i>
+					<div class="image-viewer-exif-card-title text-xs font-semibold text-first-text-color"></div>
+				</div>
+				<div class="image-viewer-exif-card-items flex flex-col gap-1"></div>
+			</div>
+		</template>
+	</div>
+	<button class="image-viewer-exif-toggle flex items-center gap-2 hidden absolute left-1/2 bottom-6 -translate-x-1/2 rounded-full border border-border-color bg-background-color-transparent-80 px-4 py-2 text-first-text-color backdrop-blur-md transition hover:bg-background-color-transparent-40" type="button" aria-label="EXIF" aria-expanded="false">
+		<i class="fa-solid fa-circle-info text-xs"></i>
+		<span class="text-xs font-semibold uppercase tracking-wider">EXIF</span>
+	</button>
+	<button class="image-viewer-next" type="button" aria-label="Next">
+		<i class="fa-solid fa-chevron-right"></i>
+	</button>
+</div>
+
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    window.swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+
+    window.dispatchEvent(
+        new CustomEvent("redefine:swup:ready", {
+            detail: {
+                swup: window.swup,
+            },
+        }),
+    );
+</script>
+
+
+
+
+	
+<script src="/js/build/main.js" type="module"></script>
+
+
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+
+
+
+    
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@11.6.0/dist/mermaid.min.js"></script>
+    
+
+
+
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+
+	
+</body>
+
+</html>
