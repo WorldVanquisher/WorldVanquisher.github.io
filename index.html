@@ -691,7 +691,7 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">15</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">21</div>
         <div class="label text-third-text-color text-sm">Tags</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -699,7 +699,7 @@
         <div class="label text-third-text-color text-sm">Categories</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">32</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">40</div>
         <div class="label text-third-text-color text-sm">Posts</div>
     </a>
 </div>
@@ -731,7 +731,7 @@
 </div>
                 <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">15</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">21</div>
         <div class="label text-third-text-color text-sm">Tags</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -739,7 +739,7 @@
         <div class="label text-third-text-color text-sm">Categories</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">32</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">40</div>
         <div class="label text-third-text-color text-sm">Posts</div>
     </a>
 </div>
@@ -764,28 +764,28 @@
                 
                 <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
                     <h3 class="home-article-title">
-                        <a href="/2026/10/22/flh-ai-suggestions/">
-                            AI suggestions with human authority: bounded candidates, transactional confirmation and recovery
+                        <a href="/zh-CN/2026/11/09/flh-listening/">
+                            每日听力课：逐字证据、每天最多准备一课，以及诚实的&#34;未知&#34;
                         </a>
                     </h3>
 
                     <div class="home-article-content markdown-body">
                         
-                            <p><strong>Language:</strong> English | <a href="/zh-CN/2026/10/22/flh-ai-suggestions/">简体中文</a></p>
-<p>I added AI-assisted Concept suggestions to FLH to reduce the manual effort of reviewing extracted knowledge. The model proposes existing Concepts and explains its choice; the user confirms each item before membership changes. The implementation keeps generated evidence, current state and human authority separate.</p>
-<p><strong>My engineering contribution:</strong> defining bounded inputs and candidates, designing generation and confirmation as different operations, and hardening their replay, cancellation and stale-state behavior.</p>
+                            <p><strong>语言：</strong> <a href="/2026/11/09/flh-listening/">English</a> | 简体中文</p>
 <blockquote>
-<p>发布日期：2026-10-22</p>
+<p>发布日期：2026-11-09</p>
 </blockquote>
+<p>FLH 原本只处理我输入的问题。听力功能加入了第二个来源：法语视频加上我自己提供的转写稿，生成考试式听力练习；之后每天从播放列表拉取，最多自动准备一课，并可选通过 Telegram 通知。它分两次改动、两天完成。</p>
+<p><strong>我的工程贡献：把源材料与生成的练习分开，要求每条引用逐字匹配，把自动花费限制在每天一次尝试，并把超时或丢失的调用视为”未知”而非”失败”。</strong></p>
                         
                     </div>
 
                     <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Thu Oct 22 2026 12:00:00 GMT-0400">
+            <span class="home-article-date" data-date="Mon Nov 09 2026 12:00:00 GMT-0500">
                 
-                    2026-10-22
+                    2026-11-09
                 
             </span>
         </span>
@@ -831,7 +831,581 @@
         
     </div>
 
-    <a href="/2026/10/22/flh-ai-suggestions/">Read more<span class="seo-reader-text">AI suggestions with human authority: bounded candidates, transactional confirmation and recovery</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+    <a href="/zh-CN/2026/11/09/flh-listening/">Read more<span class="seo-reader-text">每日听力课：逐字证据、每天最多准备一课，以及诚实的&#34;未知&#34;</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+</div>
+
+                </div>
+            </li>
+        
+            <li class="home-article-item">
+
+                
+
+                
+
+                
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2026/11/09/flh-listening/">
+                            Daily listening lessons: verbatim evidence, one prepared lesson a day, and honest unknowns
+                        </a>
+                    </h3>
+
+                    <div class="home-article-content markdown-body">
+                        
+                            <p><strong>Language:</strong> English | <a href="/zh-CN/2026/11/09/flh-listening/">简体中文</a></p>
+<p>FLH started from questions I typed. The listening work adds a second source: French videos with my own transcripts, turned into exam-style listening exercises, then pulled from a playlist each day with at most one prepared lesson and an optional Telegram notice. It shipped as two changes, over two days.</p>
+<p><strong>My engineering contribution:</strong> separating source material from generated exercises, requiring every cited line to be verbatim, capping automatic spending at one attempt per day, and treating a timed-out or lost call as unknown rather than failed.</p>
+<blockquote>
+<p>Published: 2026-11-09</p>
+</blockquote>
+                        
+                    </div>
+
+                    <div class="home-article-meta-info-container">
+    <div class="home-article-meta-info">
+        <span><i class="fa-solid fa-calendars"></i>&nbsp;
+            <span class="home-article-date" data-date="Mon Nov 09 2026 12:00:00 GMT-0500">
+                
+                    2026-11-09
+                
+            </span>
+        </span>
+        
+            <span class="home-article-category">
+                <i class="fa-solid fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+        
+        
+            <span class="home-article-tag">
+                <i class="fa-solid fa-tags"></i>&nbsp;
+                <ul>
+                    
+                        <li>
+                            
+                            <a href="/tags/Applied-AI/">Applied AI</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/Go/">Go</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/SQLite/">SQLite</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            </span>
+        
+    </div>
+
+    <a href="/2026/11/09/flh-listening/">Read more<span class="seo-reader-text">Daily listening lessons: verbatim evidence, one prepared lesson a day, and honest unknowns</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+</div>
+
+                </div>
+            </li>
+        
+            <li class="home-article-item">
+
+                
+
+                
+
+                
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/zh-CN/2026/11/08/flh-recall-practice/">
+                            用自己的问题做回忆练习：答案先隐藏，参考不是评分，什么都不保存
+                        </a>
+                    </h3>
+
+                    <div class="home-article-content markdown-body">
+                        
+                            <p><strong>语言：</strong> <a href="/2026/11/08/flh-recall-practice/">English</a> | 简体中文</p>
+<blockquote>
+<p>发布日期：2026-11-08</p>
+</blockquote>
+<p>Knowledge Library 以前只能浏览。Concept 页面一次性显示标题、所有陈述、例句和来源链接，没法先尝试回答再核对。回忆练习补上了这一步：从一个 Concept 出发，只使用我自己最初提出的问题。</p>
+<p><strong>我的工程贡献：定义什么算”当前支持”，决定揭示内容是参考而不是评分，并要求练习不保存、不改变任何东西。</strong></p>
+                        
+                    </div>
+
+                    <div class="home-article-meta-info-container">
+    <div class="home-article-meta-info">
+        <span><i class="fa-solid fa-calendars"></i>&nbsp;
+            <span class="home-article-date" data-date="Sun Nov 08 2026 14:00:00 GMT-0500">
+                
+                    2026-11-08
+                
+            </span>
+        </span>
+        
+            <span class="home-article-category">
+                <i class="fa-solid fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+        
+        
+            <span class="home-article-tag">
+                <i class="fa-solid fa-tags"></i>&nbsp;
+                <ul>
+                    
+                        <li>
+                            
+                            <a href="/tags/React/">React</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/Privacy/">Privacy</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/Testing/">Testing</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            </span>
+        
+    </div>
+
+    <a href="/zh-CN/2026/11/08/flh-recall-practice/">Read more<span class="seo-reader-text">用自己的问题做回忆练习：答案先隐藏，参考不是评分，什么都不保存</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+</div>
+
+                </div>
+            </li>
+        
+            <li class="home-article-item">
+
+                
+
+                
+
+                
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2026/11/08/flh-recall-practice/">
+                            Recall practice from my own questions: hidden answers, reference not grade, nothing stored
+                        </a>
+                    </h3>
+
+                    <div class="home-article-content markdown-body">
+                        
+                            <p><strong>Language:</strong> English | <a href="/zh-CN/2026/11/08/flh-recall-practice/">简体中文</a></p>
+<p>The Knowledge Library could only be browsed. A Concept’s page shows its title, every statement, examples and source links at once, so there was no way to try a question first and check afterwards. Recall practice adds that, starting from a Concept, using only the questions I originally asked.</p>
+<p><strong>My engineering contribution:</strong> defining what counts as current support, deciding that the reveal is a reference rather than a grade, and requiring that practice stores nothing and changes nothing.</p>
+<blockquote>
+<p>Published: 2026-11-08</p>
+</blockquote>
+                        
+                    </div>
+
+                    <div class="home-article-meta-info-container">
+    <div class="home-article-meta-info">
+        <span><i class="fa-solid fa-calendars"></i>&nbsp;
+            <span class="home-article-date" data-date="Sun Nov 08 2026 14:00:00 GMT-0500">
+                
+                    2026-11-08
+                
+            </span>
+        </span>
+        
+            <span class="home-article-category">
+                <i class="fa-solid fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+        
+        
+            <span class="home-article-tag">
+                <i class="fa-solid fa-tags"></i>&nbsp;
+                <ul>
+                    
+                        <li>
+                            
+                            <a href="/tags/React/">React</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/Privacy/">Privacy</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/Testing/">Testing</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            </span>
+        
+    </div>
+
+    <a href="/2026/11/08/flh-recall-practice/">Read more<span class="seo-reader-text">Recall practice from my own questions: hidden answers, reference not grade, nothing stored</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+</div>
+
+                </div>
+            </li>
+        
+            <li class="home-article-item">
+
+                
+
+                
+
+                
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/zh-CN/2026/11/08/flh-capture-batch-import/">
+                            不靠猜测的批量导入：&#34;未确认&#34;也是一种结果，恢复就是重跑
+                        </a>
+                    </h3>
+
+                    <div class="home-article-content markdown-body">
+                        
+                            <p><strong>语言：</strong> <a href="/2026/11/08/flh-capture-batch-import/">English</a> | 简体中文</p>
+<blockquote>
+<p>发布日期：2026-11-08</p>
+</blockquote>
+<p>FLH 的 capture CLI 以前一次只导入一个 <code>learning_capture_v1</code> 文件。我加入了最多 100 个文件的批量模式，以及一个不发送任何请求的预览。设计的核心是一个问题：响应没有回来时，报告应该怎么写？</p>
+<p><strong>我的工程贡献：定义结果类别和退出码，选择”重跑”而非自动重试，并规定报告的隐私规则。</strong></p>
+                        
+                    </div>
+
+                    <div class="home-article-meta-info-container">
+    <div class="home-article-meta-info">
+        <span><i class="fa-solid fa-calendars"></i>&nbsp;
+            <span class="home-article-date" data-date="Sun Nov 08 2026 13:00:00 GMT-0500">
+                
+                    2026-11-08
+                
+            </span>
+        </span>
+        
+            <span class="home-article-category">
+                <i class="fa-solid fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+        
+        
+            <span class="home-article-tag">
+                <i class="fa-solid fa-tags"></i>&nbsp;
+                <ul>
+                    
+                        <li>
+                            
+                            <a href="/tags/Go/">Go</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/Reliability/">Reliability</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/CLI/">CLI</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            </span>
+        
+    </div>
+
+    <a href="/zh-CN/2026/11/08/flh-capture-batch-import/">Read more<span class="seo-reader-text">不靠猜测的批量导入：&#34;未确认&#34;也是一种结果，恢复就是重跑</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+</div>
+
+                </div>
+            </li>
+        
+            <li class="home-article-item">
+
+                
+
+                
+
+                
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2026/11/08/flh-capture-batch-import/">
+                            Batch import without guessing: &#34;unconfirmed&#34; is an outcome, and recovery is a rerun
+                        </a>
+                    </h3>
+
+                    <div class="home-article-content markdown-body">
+                        
+                            <p><strong>Language:</strong> English | <a href="/zh-CN/2026/11/08/flh-capture-batch-import/">简体中文</a></p>
+<p>FLH’s capture CLI imported one <code>learning_capture_v1</code> file at a time. I added a batch mode for up to 100 files and a preview that sends nothing. Most of the design is about one question: when a response never arrives, what should the report say?</p>
+<p><strong>My engineering contribution:</strong> defining the outcome categories and exit statuses, choosing a rerun over automatic retry, and setting the privacy rule for reports.</p>
+<blockquote>
+<p>Published: 2026-11-08</p>
+</blockquote>
+                        
+                    </div>
+
+                    <div class="home-article-meta-info-container">
+    <div class="home-article-meta-info">
+        <span><i class="fa-solid fa-calendars"></i>&nbsp;
+            <span class="home-article-date" data-date="Sun Nov 08 2026 13:00:00 GMT-0500">
+                
+                    2026-11-08
+                
+            </span>
+        </span>
+        
+            <span class="home-article-category">
+                <i class="fa-solid fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+        
+        
+            <span class="home-article-tag">
+                <i class="fa-solid fa-tags"></i>&nbsp;
+                <ul>
+                    
+                        <li>
+                            
+                            <a href="/tags/Go/">Go</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/Reliability/">Reliability</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/CLI/">CLI</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            </span>
+        
+    </div>
+
+    <a href="/2026/11/08/flh-capture-batch-import/">Read more<span class="seo-reader-text">Batch import without guessing: &#34;unconfirmed&#34; is an outcome, and recovery is a rerun</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+</div>
+
+                </div>
+            </li>
+        
+            <li class="home-article-item">
+
+                
+
+                
+
+                
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2026/11/08/flh-v1-release/">
+                            Releasing FLH v1.0: a derived stage summary, a rehearsed rollback and a real-browser smoke
+                        </a>
+                    </h3>
+
+                    <div class="home-article-content markdown-body">
+                        
+                            <p><strong>Language:</strong> English | <a href="/zh-CN/2026/11/08/flh-v1-release/">简体中文</a></p>
+<p>FLH v1.0.0 is the first release I treat as finished for personal use: one Docker image with a Go server, SQLite and the React workbench, bound to <code>127.0.0.1</code>. Most of the release work was not new features. It was making the daily path from question to Concept easy to follow, then checking that an upgrade can be undone and that the packaged app works in a real browser.</p>
+<p><strong>My engineering contribution:</strong> defining the release gaps, setting the rule that a release check must never touch the daily instance, and deciding which evidence counted before tagging <code>v1.0.0</code>.</p>
+<blockquote>
+<p>Published: 2026-11-08</p>
+</blockquote>
+                        
+                    </div>
+
+                    <div class="home-article-meta-info-container">
+    <div class="home-article-meta-info">
+        <span><i class="fa-solid fa-calendars"></i>&nbsp;
+            <span class="home-article-date" data-date="Sun Nov 08 2026 12:00:00 GMT-0500">
+                
+                    2026-11-08
+                
+            </span>
+        </span>
+        
+            <span class="home-article-category">
+                <i class="fa-solid fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+        
+        
+            <span class="home-article-tag">
+                <i class="fa-solid fa-tags"></i>&nbsp;
+                <ul>
+                    
+                        <li>
+                            
+                            <a href="/tags/Reliability/">Reliability</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/Testing/">Testing</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/Release-Engineering/">Release Engineering</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            </span>
+        
+    </div>
+
+    <a href="/2026/11/08/flh-v1-release/">Read more<span class="seo-reader-text">Releasing FLH v1.0: a derived stage summary, a rehearsed rollback and a real-browser smoke</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+</div>
+
+                </div>
+            </li>
+        
+            <li class="home-article-item">
+
+                
+
+                
+
+                
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/zh-CN/2026/11/08/flh-v1-release/">
+                            发布 FLH v1.0：派生的阶段摘要、演练过的回滚与真实浏览器冒烟测试
+                        </a>
+                    </h3>
+
+                    <div class="home-article-content markdown-body">
+                        
+                            <p><strong>语言：</strong> <a href="/2026/11/08/flh-v1-release/">English</a> | 简体中文</p>
+<blockquote>
+<p>发布日期：2026-11-08</p>
+</blockquote>
+<p>FLH v1.0.0 是第一个我认为可以长期个人使用的版本：一个 Docker 镜像，包含 Go 服务、SQLite 和 React 工作台，只绑定 <code>127.0.0.1</code>。这次发布的主要工作不是新功能，而是让”从问题到 Concept”的日常流程清晰可循，再验证升级可以回退、打包后的应用能在真实浏览器里工作。</p>
+<p><strong>我的工程贡献：梳理发布缺口，规定任何发布检查都不能触碰日常实例，并决定哪些证据足以打 <code>v1.0.0</code> 标签。</strong></p>
+                        
+                    </div>
+
+                    <div class="home-article-meta-info-container">
+    <div class="home-article-meta-info">
+        <span><i class="fa-solid fa-calendars"></i>&nbsp;
+            <span class="home-article-date" data-date="Sun Nov 08 2026 12:00:00 GMT-0500">
+                
+                    2026-11-08
+                
+            </span>
+        </span>
+        
+            <span class="home-article-category">
+                <i class="fa-solid fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+        
+        
+            <span class="home-article-tag">
+                <i class="fa-solid fa-tags"></i>&nbsp;
+                <ul>
+                    
+                        <li>
+                            
+                            <a href="/tags/Reliability/">Reliability</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/Testing/">Testing</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/Release-Engineering/">Release Engineering</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            </span>
+        
+    </div>
+
+    <a href="/zh-CN/2026/11/08/flh-v1-release/">Read more<span class="seo-reader-text">发布 FLH v1.0：派生的阶段摘要、演练过的回滚与真实浏览器冒烟测试</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
                 </div>
@@ -928,18 +1502,18 @@
                 
                 <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
                     <h3 class="home-article-title">
-                        <a href="/2026/10/21/flh-daily-workflow/">
-                            Making a learning workbench usable: keyset pagination, direct navigation and recoverable saves
+                        <a href="/2026/10/22/flh-ai-suggestions/">
+                            AI suggestions with human authority: bounded candidates, transactional confirmation and recovery
                         </a>
                     </h3>
 
                     <div class="home-article-content markdown-body">
                         
-                            <p><strong>Language:</strong> English | <a href="/zh-CN/2026/10/21/flh-daily-workflow/">简体中文</a></p>
-<p>I improved FLH’s daily learning workflow by replacing full review-queue loading with keyset pagination, adding original-text search and direct record navigation, and building a question-intake path that can recover uncertain saves.</p>
-<p><strong>Result:</strong> on an isolated fixture with <strong>1,543 reviewable units</strong>, the initial review response shrank from about <strong>821 KB to 27 KB</strong>. The learner can return to a previous unit, find an old question and save a new one without manually constructing JSON.</p>
+                            <p><strong>Language:</strong> English | <a href="/zh-CN/2026/10/22/flh-ai-suggestions/">简体中文</a></p>
+<p>I added AI-assisted Concept suggestions to FLH to reduce the manual effort of reviewing extracted knowledge. The model proposes existing Concepts and explains its choice; the user confirms each item before membership changes. The implementation keeps generated evidence, current state and human authority separate.</p>
+<p><strong>My engineering contribution:</strong> defining bounded inputs and candidates, designing generation and confirmation as different operations, and hardening their replay, cancellation and stale-state behavior.</p>
 <blockquote>
-<p>发布日期：2026-10-21</p>
+<p>发布日期：2026-10-22</p>
 </blockquote>
                         
                     </div>
@@ -947,9 +1521,9 @@
                     <div class="home-article-meta-info-container">
     <div class="home-article-meta-info">
         <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Wed Oct 21 2026 12:00:00 GMT-0400">
+            <span class="home-article-date" data-date="Thu Oct 22 2026 12:00:00 GMT-0400">
                 
-                    2026-10-21
+                    2026-10-22
                 
             </span>
         </span>
@@ -977,505 +1551,11 @@
                     
                         <li>
                             
-                            <a href="/tags/SQLite/">SQLite</a>&nbsp;
+                            <a href="/tags/Applied-AI/">Applied AI</a>&nbsp;
                         </li>
                     
                         <li>
                             | 
-                            <a href="/tags/Full-stack/">Full-stack</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/React/">React</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2026/10/21/flh-daily-workflow/">Read more<span class="seo-reader-text">Making a learning workbench usable: keyset pagination, direct navigation and recoverable saves</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/zh-CN/2026/10/21/flh-daily-workflow/">
-                            让学习工作台真正好用：Keyset 分页、直接导航与可恢复保存
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p><strong>语言：</strong> <a href="/2026/10/21/flh-daily-workflow/">English</a> | 简体中文</p>
-<blockquote>
-<p>发布日期：2026-10-21</p>
-</blockquote>
-<p>我通过 keyset 分页替代全量审阅队列，加入原文搜索、记录直达和可以恢复未知结果的问题保存流程，改善 FLH 的日常使用。</p>
-<p><strong>结果：在 1,543 个可审阅 unit 的隔离 fixture 中，首次响应从约 821 KB 缩减到 27 KB。</strong> 学习者能够返回上次审阅位置、找到旧问题，并直接输入新问题。</p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Wed Oct 21 2026 12:00:00 GMT-0400">
-                
-                    2026-10-21
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/SQLite/">SQLite</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/Full-stack/">Full-stack</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/React/">React</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/zh-CN/2026/10/21/flh-daily-workflow/">Read more<span class="seo-reader-text">让学习工作台真正好用：Keyset 分页、直接导航与可恢复保存</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2026/10/20/flh-readonly-demo-aws/">
-                            From a personal service to a deployable demo: release integrity, Terraform and AWS
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p><strong>Language:</strong> English | <a href="/zh-CN/2026/10/20/flh-readonly-demo-aws/">简体中文</a></p>
-<p>I turned French Learning Hub into a deployable demonstration system by separating the personal workbench from a curated, read-only runtime. The work covered server-enforced access boundaries, precomputed model artifacts, Linux release packaging, browser acceptance, Terraform infrastructure and verified installation on EC2.</p>
-<p><strong>My engineering contribution:</strong> defining the demo’s runtime and data boundaries, connecting source provenance to release identity, and taking the deployment through an SSM-managed AWS environment with upgrade and rollback procedures.</p>
-<blockquote>
-<p>发布日期：2026-10-20</p>
-</blockquote>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Tue Oct 20 2026 12:00:00 GMT-0400">
-                
-                    2026-10-20
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Go/">Go</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/AWS/">AWS</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/Terraform/">Terraform</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2026/10/20/flh-readonly-demo-aws/">Read more<span class="seo-reader-text">From a personal service to a deployable demo: release integrity, Terraform and AWS</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/zh-CN/2026/10/20/flh-readonly-demo-aws/">
-                            从个人服务到可部署演示：发布完整性、Terraform 与 AWS
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p><strong>语言：</strong> <a href="/2026/10/20/flh-readonly-demo-aws/">English</a> | 简体中文</p>
-<blockquote>
-<p>发布日期：2026-10-20</p>
-</blockquote>
-<p>我把 FLH 的个人工作台与精选只读演示分开，完成服务边界、预计算模型 artifact、Linux 打包、浏览器验收、Terraform 基础设施与 EC2 安装验证。</p>
-<p><strong>我的工程贡献：定义运行时和数据边界，把源码来源连接到发布身份，并推进 SSM 管理的 AWS 部署、升级与回滚流程。</strong></p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Tue Oct 20 2026 12:00:00 GMT-0400">
-                
-                    2026-10-20
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Go/">Go</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/AWS/">AWS</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/Terraform/">Terraform</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/zh-CN/2026/10/20/flh-readonly-demo-aws/">Read more<span class="seo-reader-text">从个人服务到可部署演示：发布完整性、Terraform 与 AWS</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2026/10/14/flh-hybrid-search/">
-                            Building explainable hybrid search with Go, SQLite and Qdrant
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p><strong>Language:</strong> English | <a href="/zh-CN/2026/10/14/flh-hybrid-search/">简体中文</a></p>
-<p>I added an explicit hybrid search mode to French Learning Hub so a learner can find a Concept through both its wording and its meaning, then inspect how that result was retrieved. The implementation combines existing SQLite keyword results with Qdrant semantic results, exposes their evidence in React, and checks the final results against current records.</p>
-<p><strong>My engineering contribution:</strong> defining a bounded ranking contract, integrating the two production search paths, making the result evidence visible, and driving acceptance through an independent ranking oracle.</p>
-<blockquote>
-<p>发布日期：2026-10-14</p>
-</blockquote>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Wed Oct 14 2026 12:00:00 GMT-0400">
-                
-                    2026-10-14
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Go/">Go</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/Search/">Search</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/Qdrant/">Qdrant</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2026/10/14/flh-hybrid-search/">Read more<span class="seo-reader-text">Building explainable hybrid search with Go, SQLite and Qdrant</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/zh-CN/2026/10/14/flh-hybrid-search/">
-                            用 Go、SQLite 与 Qdrant 构建可解释的混合检索
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p><strong>语言：</strong> <a href="/2026/10/14/flh-hybrid-search/">English</a> | 简体中文</p>
-<blockquote>
-<p>发布日期：2026-10-14</p>
-</blockquote>
-<p>我为 FLH 加入显式 Hybrid 搜索，让学习者既可以按措辞，也可以按含义找到 Concept，并查看每条结果的检索依据。实现连接 SQLite 关键词搜索与 Qdrant 语义搜索，在 React 中展示证据，并对最终结果回查当前记录。</p>
-<p><strong>我的工程贡献：定义有界排序合同、整合生产搜索路径、展示结果依据，并以独立 oracle 推进验收。</strong></p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Wed Oct 14 2026 12:00:00 GMT-0400">
-                
-                    2026-10-14
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Go/">Go</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/Search/">Search</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/Qdrant/">Qdrant</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/zh-CN/2026/10/14/flh-hybrid-search/">Read more<span class="seo-reader-text">用 Go、SQLite 与 Qdrant 构建可解释的混合检索</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2026/10/12/flh-semantic-search-engineering/">
-                            Semantic search for French-learning notes: the model only makes vectors
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p><strong>Language:</strong> English | <a href="/zh-CN/2026/10/12/flh-semantic-search-engineering/">简体中文</a></p>
-<blockquote>
-<p>发布日期：2026-10-12</p>
-</blockquote>
-<p>I added persistent semantic retrieval to FLH, connecting a Windows RTX 4070 embedding service to a Linux NAS through Tailscale. The work covers Qdrant publication, reusable SQLite vector caches, bounded model calls and GPU reproducibility diagnostics.</p>
-<p><strong>Engineering focus:</strong> AI infrastructure, index consistency and reproducible evaluation.</p>
-<p>French Learning Hub (FLH) is my personal French-learning service. I record the<br>questions I meet while learning, the system extracts knowledge units, and I<br>organize them into durable Concepts (for example “depuis for something still<br>going on”). I ran the GPU diagnostic and the<br>NAS acceptance myself. This article separates four kinds of evidence:</p>
-<ul>
-<li><strong>facts:</strong> code and schema;</li>
-<li><strong>author tests:</strong> tests the implementing agent ran itself;</li>
-<li><strong>independent tests:</strong> acceptance by a different agent;</li>
-<li><strong>human observations:</strong> results I executed myself and the agents did not<br>re-check.</li>
-</ul>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Mon Oct 12 2026 12:00:00 GMT-0400">
-                
-                    2026-10-12
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
                             <a href="/tags/Go/">Go</a>&nbsp;
                         </li>
                     
@@ -1484,99 +1564,12 @@
                             <a href="/tags/SQLite/">SQLite</a>&nbsp;
                         </li>
                     
-                        <li>
-                            | 
-                            <a href="/tags/Engineering/">Engineering</a>&nbsp;
-                        </li>
-                    
                 </ul>
             </span>
         
     </div>
 
-    <a href="/2026/10/12/flh-semantic-search-engineering/">Read more<span class="seo-reader-text">Semantic search for French-learning notes: the model only makes vectors</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/zh-CN/2026/10/12/flh-semantic-search-engineering/">
-                            给法语学习笔记加语义搜索：模型只负责生成向量
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            
-                            语言： English | 简体中文
-
-发布日期：2026-10-12
-
-French Learning Hub（FLH）是我的个人法语学习服务：我把学习中遇到的问题记下来，系统提取知识单元，再由我把它们整理成持久的 Concept（例如”depuis 表示仍在持续的事”）。代码主要由 AI 编码代理（Claude Code 和 Codex）在我的任务合同和审查下实现；GPU 上的诊断和 N...
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Mon Oct 12 2026 12:00:00 GMT-0400">
-                
-                    2026-10-12
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/French-Learning-Hub/">French Learning Hub</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Go/">Go</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/SQLite/">SQLite</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/Engineering/">Engineering</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/zh-CN/2026/10/12/flh-semantic-search-engineering/">Read more<span class="seo-reader-text">给法语学习笔记加语义搜索：模型只负责生成向量</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+    <a href="/2026/10/22/flh-ai-suggestions/">Read more<span class="seo-reader-text">AI suggestions with human authority: bounded candidates, transactional confirmation and recovery</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
 </div>
 
                 </div>
